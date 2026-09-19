@@ -9,12 +9,15 @@
   <a href="#cài-đặt">cài đặt</a> · <a href="#phím">phím</a> · <a href="#nội-dung-được-gõ">nội dung được gõ</a> · <a href="#cấu-hình">cấu hình</a>
 </p>
 
+Chat xuyên pane trong Herdr thì quá đã, nhưng bạn có thấy mô tả mục tiêu tốn
+thời gian kinh khủng không? Nhất là khi nó nằm ở Space khác.
+
 Mục tiêu mơ hồ tốn kém hai lần: token của bạn để mô tả nó, và token của
 agent để đi tìm nó. Popup này chấm dứt cả hai. Chọn pane, id Herdr của nó
 rơi vào prompt, và agent thao tác chính xác trên pane đó.
 
-Ba phím, ba giây. Mở, mũi tên, Enter, và đúng pane đã nằm trong prompt của
-bạn, trước khi bạn kịp gõ xong phần mô tả.
+> Ba phím, ba giây. Mở, mũi tên, Enter, và đúng pane đã nằm trong prompt của
+> bạn, trước khi bạn kịp gõ xong phần mô tả.
 
 ![Bộ chọn mở trên một pane agent, phím nhanh và bộ lọc gõ vào thu hẹp về dev-server, rồi Enter gõ herdr:dev-server(w2:p2) vào prompt](./media/demo.gif)
 

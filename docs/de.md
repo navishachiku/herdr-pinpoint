@@ -9,12 +9,16 @@
   <a href="#installation">Installation</a> · <a href="#tasten">Tasten</a> · <a href="#was-eingegeben-wird">Was eingegeben wird</a> · <a href="#konfiguration">Konfiguration</a>
 </p>
 
+Über Panes hinweg chatten in Herdr ist klasse – aber kennst du das, wenn das
+Beschreiben des Ziels ewig dauert? Vor allem, wenn es in einem anderen Space
+liegt.
+
 Vage Ziele kosten doppelt: deine Tokens, um sie zu beschreiben, und die des
 Agenten, um sie zu finden. Dieses Popup beendet beides. Wähle das Pane, seine
 Herdr-ID landet im Prompt, und der Agent handelt genau an diesem einen.
 
-Drei Tasten, drei Sekunden. Öffnen, Pfeil, Enter – und das exakte Pane steht
-in deinem Prompt, bevor du seine Beschreibung fertig getippt hättest.
+> Drei Tasten, drei Sekunden. Öffnen, Pfeil, Enter – und das exakte Pane steht
+> in deinem Prompt, bevor du seine Beschreibung fertig getippt hättest.
 
 ![Der Picker öffnet sich über einem Agenten-Pane, eine Schnelltaste und ein getippter Filter grenzen ihn auf dev-server ein, und Enter tippt herdr:dev-server(w2:p2) in den Prompt](./media/demo.gif)
 

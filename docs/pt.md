@@ -9,12 +9,15 @@
   <a href="#instalação">instalação</a> · <a href="#teclas">teclas</a> · <a href="#o-que-é-digitado">o que é digitado</a> · <a href="#configuração">configuração</a>
 </p>
 
+Conversar entre panes no Herdr é demais, mas já sentiu que descrever o alvo
+leva tempo demais? Principalmente quando ele está em outro Space.
+
 Alvos vagos custam duas vezes: seus tokens para descrevê-los e os do agente
 para ir encontrá-los. Este popup acaba com os dois. Escolha o pane, o id dele
 no Herdr cai no prompt e o agente age exatamente sobre aquele.
 
-Três teclas, três segundos. Abrir, seta, Enter, e o pane exato está no seu
-prompt antes que você terminasse de digitar a descrição.
+> Três teclas, três segundos. Abrir, seta, Enter, e o pane exato está no seu
+> prompt antes que você terminasse de digitar a descrição.
 
 ![O seletor abre sobre um pane de agente, uma tecla rápida e um filtro digitado reduzem para dev-server, e Enter digita herdr:dev-server(w2:p2) no prompt](./media/demo.gif)
 

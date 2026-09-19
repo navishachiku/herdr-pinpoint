@@ -9,12 +9,15 @@
   <a href="#installation">installation</a> · <a href="#touches">touches</a> · <a href="#ce-qui-est-saisi">ce qui est saisi</a> · <a href="#configuration">configuration</a>
 </p>
 
+Discuter d'un pane à l'autre dans Herdr, c'est génial. Mais décrire la cible,
+ça vous a déjà semblé interminable ? Surtout quand elle est dans un autre Space.
+
 Les cibles vagues coûtent deux fois : vos tokens pour les décrire, ceux de
 l'agent pour aller les trouver. Ce popup met fin aux deux. Choisissez le pane,
 son id Herdr tombe dans le prompt, et l'agent agit exactement sur celui-là.
 
-Trois touches, trois secondes. Ouvrir, flèche, Entrée, et le pane exact est
-dans votre prompt avant que vous ayez fini d'en taper la description.
+> Trois touches, trois secondes. Ouvrir, flèche, Entrée, et le pane exact est
+> dans votre prompt avant que vous ayez fini d'en taper la description.
 
 ![Le sélecteur s'ouvre au-dessus d'un pane d'agent, une touche rapide et un filtre saisi le réduisent à dev-server, et Entrée saisit herdr:dev-server(w2:p2) dans le prompt](./media/demo.gif)
 
