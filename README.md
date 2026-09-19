@@ -5,6 +5,8 @@
 ![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
 ![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
 
+[English](./README.md) | [简体中文](./docs/zh-sc.md) | [繁體中文](./docs/zh-tc.md) | [Español](./docs/es.md) | [Português](./docs/pt.md) | [Русский](./docs/ru.md) | [日本語](./docs/jp.md) | [Français](./docs/fr.md) | [Deutsch](./docs/de.md) | [Tiếng Việt](./docs/vi.md) | [한국어](./docs/ko.md) | [ไทย](./docs/th.md) | [Italiano](./docs/it.md)
+
 <p align="center">
   <a href="#install">install</a> · <a href="#keys">keys</a> · <a href="#what-gets-typed">what gets typed</a> · <a href="#configuration">configuration</a>
 </p>
