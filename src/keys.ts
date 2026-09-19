@@ -17,26 +17,23 @@ const SEQUENCES: Record<string, Action> = {
   "\x7f": { type: "backspace" },
   "\x08": { type: "backspace" },
   "\x03": { type: "escape" }, // ctrl+c
+  "\x15": { type: "clear" }, // ctrl+u
 };
 
 /**
- * Maps one stdin chunk to actions. In search mode printable characters become
- * `input`; otherwise `/` opens search and digits 1–9 are fast keys.
+ * Maps one stdin chunk to actions. Printable characters edit the query;
+ * digits are reported separately so the model can treat them as fast keys
+ * while the query is empty.
  */
-export function parseKeys(chunk: string, search: boolean): Action[] {
+export function parseKeys(chunk: string): Action[] {
   const known = SEQUENCES[chunk];
   if (known) return [known];
   if (chunk.startsWith("\x1b")) return [];
 
   const actions: Action[] = [];
   for (const char of chunk) {
-    if (search) {
-      if (char >= " " && char !== "\x7f") actions.push({ type: "input", char });
-    } else if (char === "/") {
-      actions.push({ type: "search" });
-    } else if (char >= "1" && char <= "9") {
-      actions.push({ type: "digit", n: Number(char) });
-    }
+    if (char >= "1" && char <= "9") actions.push({ type: "digit", n: Number(char) });
+    else if (char >= " " && char !== "\x7f") actions.push({ type: "input", char });
   }
   return actions;
 }

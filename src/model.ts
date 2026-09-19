@@ -23,10 +23,8 @@ export interface State {
   hover: number[];
   /** Per column: 0-based page. */
   page: number[];
-  /** Per column: search text. */
+  /** Per column: search text. Typing always edits `filter[depth]`. */
   filter: string[];
-  /** Search mode edits `filter[depth]`. */
-  search: boolean;
 }
 
 export type Action =
@@ -37,9 +35,9 @@ export type Action =
   | { type: "pageUp" }
   | { type: "pageDown" }
   | { type: "digit"; n: number }
-  | { type: "search" }
   | { type: "input"; char: string }
   | { type: "backspace" }
+  | { type: "clear" }
   | { type: "enter" }
   | { type: "escape" };
 
@@ -71,7 +69,6 @@ export function initialState(root: Item[], path: (string | null)[]): State {
     hover: [0, 0, 0],
     page: [0, 0, 0],
     filter: ["", "", ""],
-    search: false,
   };
   let items = root;
   for (let level = 0; level < LEVELS; level++) {
@@ -138,38 +135,25 @@ function setPage(state: State, page: number): void {
   setHover(state, next * PAGE_SIZE);
 }
 
+function setFilter(state: State, text: string): void {
+  state.filter[state.depth] = text;
+  state.hover[state.depth] = 0;
+  state.page[state.depth] = 0;
+  resetBelow(state, state.depth);
+}
+
 export function reduce(state: State, action: Action): Effect {
   const d = state.depth;
-  if (state.search) {
-    switch (action.type) {
-      case "input":
-        state.filter[d] += action.char;
-        state.hover[d] = 0;
-        state.page[d] = 0;
-        resetBelow(state, d);
-        return null;
-      case "backspace":
-        state.filter[d] = state.filter[d].slice(0, -1);
-        state.hover[d] = 0;
-        state.page[d] = 0;
-        resetBelow(state, d);
-        return null;
-      case "enter":
-        state.search = false;
-        return null;
-      case "escape":
-        state.filter[d] = "";
-        state.hover[d] = 0;
-        state.page[d] = 0;
-        resetBelow(state, d);
-        state.search = false;
-        return null;
-      default:
-        return null;
-    }
-  }
-
   switch (action.type) {
+    case "input":
+      setFilter(state, state.filter[d] + action.char);
+      return null;
+    case "backspace":
+      setFilter(state, state.filter[d].slice(0, -1));
+      return null;
+    case "clear":
+      setFilter(state, "");
+      return null;
     case "up":
       setHover(state, state.hover[d] - 1);
       return null;
@@ -183,6 +167,11 @@ export function reduce(state: State, action: Action): Effect {
       setPage(state, state.page[d] + 1);
       return null;
     case "digit": {
+      // Digits are fast keys only while nothing is typed; otherwise they are text.
+      if (state.filter[d]) {
+        setFilter(state, state.filter[d] + String(action.n));
+        return null;
+      }
       const idx = state.page[d] * PAGE_SIZE + action.n - 1;
       if (idx >= column(state, d).length) return null;
       setHover(state, idx);
@@ -193,18 +182,25 @@ export function reduce(state: State, action: Action): Effect {
     case "back":
       if (d > 0) state.depth = d - 1;
       return null;
-    case "search":
-      state.search = true;
-      return null;
     case "enter": {
       const item = hovered(state, d);
       return item ? { type: "select", item } : null;
     }
     case "escape":
+      // Two-stage escape, as in fzf and VS Code's quick pick: clear the query first, then close.
+      if (state.filter[d]) {
+        setFilter(state, "");
+        return null;
+      }
       return { type: "quit" };
     default:
       return null;
   }
+}
+
+/** True when digits act as fast keys, i.e. nothing is typed in the current column. */
+export function fastKeysActive(state: State): boolean {
+  return state.filter[state.depth] === "";
 }
 
 function choose(state: State): Effect {

@@ -141,36 +141,48 @@ describe("navigation", () => {
 });
 
 describe("search", () => {
-  test("filters only the current column; enter keeps, escape clears", () => {
+  test("typing filters the current column and hovers the first match", () => {
     const s = fresh();
-    reduce(s, { type: "search" });
     for (const char of "bet") reduce(s, { type: "input", char });
     expect(ids(column(s, 0))).toEqual(["w2"]);
-    expect(reduce(s, { type: "enter" })).toBeNull();
-    expect(s.search).toBe(false);
-    expect(ids(column(s, 0))).toEqual(["w2"]);
     expect(hovered(s, 0)?.id).toBe("w2");
-    reduce(s, { type: "search" });
-    reduce(s, { type: "escape" });
-    expect(s.search).toBe(false);
-    expect(column(s, 0)).toHaveLength(12);
+    expect(ids(column(s, 1))).toEqual(["w2:t1"]);
   });
 
-  test("matches ids too and digits are text in search mode", () => {
+  test("escape clears the query first, then quits", () => {
     const s = fresh();
-    reduce(s, { type: "search" });
+    reduce(s, { type: "input", char: "b" });
+    expect(reduce(s, { type: "escape" })).toBeNull();
+    expect(s.filter[0]).toBe("");
+    expect(column(s, 0)).toHaveLength(12);
+    expect(reduce(s, { type: "escape" })).toEqual({ type: "quit" });
+  });
+
+  test("ctrl-u clears and backspace edits", () => {
+    const s = fresh();
     for (const char of "w2") reduce(s, { type: "input", char });
     expect(ids(column(s, 0))).toEqual(["w2"]);
     reduce(s, { type: "backspace" });
     expect(column(s, 0)).toHaveLength(12);
+    reduce(s, { type: "input", char: "x" });
+    reduce(s, { type: "clear" });
+    expect(s.filter[0]).toBe("");
   });
 
-  test("filter survives moving between columns", () => {
+  test("digits are fast keys only while the query is empty", () => {
     const s = fresh();
-    reduce(s, { type: "search" });
+    reduce(s, { type: "input", char: "w" });
+    reduce(s, { type: "digit", n: 2 });
+    expect(s.filter[0]).toBe("w2");
+    expect(s.depth).toBe(0);
+    expect(ids(column(s, 0))).toEqual(["w2"]);
+  });
+
+  test("the query survives moving between columns", () => {
+    const s = fresh();
     reduce(s, { type: "input", char: "a" });
-    reduce(s, { type: "enter" });
     reduce(s, { type: "choose" });
+    expect(s.filter[1]).toBe("");
     reduce(s, { type: "back" });
     expect(s.filter[0]).toBe("a");
   });
@@ -178,23 +190,25 @@ describe("search", () => {
 
 describe("parseKeys", () => {
   test("navigation keys", () => {
-    expect(parseKeys("\x1b[B", false)).toEqual([{ type: "down" }]);
-    expect(parseKeys("\x1b[6~", false)).toEqual([{ type: "pageDown" }]);
-    expect(parseKeys("\r", false)).toEqual([{ type: "enter" }]);
-    expect(parseKeys("\x1b", false)).toEqual([{ type: "escape" }]);
+    expect(parseKeys("\x1b[B")).toEqual([{ type: "down" }]);
+    expect(parseKeys("\x1b[6~")).toEqual([{ type: "pageDown" }]);
+    expect(parseKeys("\r")).toEqual([{ type: "enter" }]);
+    expect(parseKeys("\x1b")).toEqual([{ type: "escape" }]);
+    expect(parseKeys("\x15")).toEqual([{ type: "clear" }]);
+    expect(parseKeys("\x7f")).toEqual([{ type: "backspace" }]);
   });
 
-  test("digits and slash outside search; text inside", () => {
-    expect(parseKeys("3", false)).toEqual([{ type: "digit", n: 3 }]);
-    expect(parseKeys("0", false)).toEqual([]);
-    expect(parseKeys("/", false)).toEqual([{ type: "search" }]);
-    expect(parseKeys("3", true)).toEqual([{ type: "input", char: "3" }]);
-    expect(parseKeys("/", true)).toEqual([{ type: "input", char: "/" }]);
-    expect(parseKeys("\x7f", true)).toEqual([{ type: "backspace" }]);
+  test("digits are reported apart from other text", () => {
+    expect(parseKeys("3")).toEqual([{ type: "digit", n: 3 }]);
+    expect(parseKeys("0")).toEqual([{ type: "input", char: "0" }]);
+    expect(parseKeys("ab")).toEqual([
+      { type: "input", char: "a" },
+      { type: "input", char: "b" },
+    ]);
   });
 
   test("unknown escape sequences are dropped", () => {
-    expect(parseKeys("\x1b[Z", false)).toEqual([]);
+    expect(parseKeys("\x1b[Z")).toEqual([]);
   });
 });
 

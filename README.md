@@ -6,15 +6,17 @@ Built for telling a coding agent *which* pane or agent you mean without
 looking up ids by hand.
 
 ```
- SEARCH  / search
+ ╭──────────────────────────────────────────────────────────────────╮
+ │ Type to filter                                                   │
+ ╰──────────────────────────────────────────────────────────────────╯
 
  Spaces (1/1)              Tabs (1/1)               Panes (1/1)
-   api                 w1  1 chat           w1:t1  1 assistant (claude)  w1:p1
-   web                 w2  2 server         w1:t2  2 tests               w1:p2
- ▶ docs                w3
+ ▶ api                     chat                     assistant (claude)  1
+   web                     server                   tests               2
+   docs
 
- ↑/↓ Select   ← Back   → Choose   Enter Confirm   Esc Close
- PgUp/PgDn Switch page   1~9 Fast key   / Search
+ Type : Filter   ↑/↓ : Select   ← : Back   → : Choose   1~9 : Fast key
+ PgUp/PgDn : Page   Ctrl-U : Clear   Enter : Confirm   Esc : Clear / Close
 ```
 
 Press Enter on `assistant (claude)` above and the calling pane receives:
@@ -45,18 +47,21 @@ description = "pick a herdr target"
 
 | Key | Action |
 | --- | --- |
+| type | Filter the current column; the first match is hovered |
 | `↑` / `↓` | Move the hover in the current column |
-| `→` or `1`–`9` | Choose: activate the hovered item and move to its children |
+| `→` | Choose: activate the hovered item and move to its children |
+| `1`–`9` | Same as `→` for the numbered item; only while nothing is typed |
 | `←` | Back to the parent column |
 | `PgUp` / `PgDn` | Switch page (9 items per page) |
+| `Ctrl-U` | Clear the query |
 | `Enter` | Type the hovered item into the calling pane and close |
-| `/` | Search the current column; `Enter` keeps the filter, `Esc` clears it |
-| `Esc` | Close without typing anything |
+| `Esc` | Clear the query; when it is already empty, close |
 
 The three columns always show one path: the hovered space's tabs, and the
-hovered tab's panes. Number keys act on the column that shows them, which is
-the column right of the last activated item. Any level can be confirmed, so
-`Enter` on a space sends the space.
+hovered tab's panes. Each column keeps its own query. Number badges appear on
+the column that accepts them, which is the column right of the last activated
+item, and disappear while a query is being typed. Any level can be confirmed,
+so `Enter` on a space sends the space.
 
 The popup opens with the hover on the space, tab, and pane you called it from.
 

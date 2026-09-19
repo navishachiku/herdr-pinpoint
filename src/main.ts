@@ -1,7 +1,7 @@
 import { loadConfig, renderTemplate } from "./config";
 import { loadContext, loadTree, sendText } from "./herdr";
 import { parseKeys } from "./keys";
-import { initialState, reduce, toItems, type Item } from "./model";
+import { hovered, initialState, reduce, toItems, type Item } from "./model";
 import { render } from "./render";
 
 const ALT_SCREEN_ON = "\x1b[?1049h\x1b[?25l";
@@ -22,8 +22,13 @@ const state = initialState(toItems(loadTree()), [context.workspaceId, context.ta
 const out = process.stdout;
 const inp = process.stdin;
 
+function outputFor(item: Item): string {
+  return renderTemplate(config.outputTemplate, { name: item.name, label: item.label, id: item.id });
+}
+
 function draw(): void {
-  out.write(render(state, out.columns ?? 80, out.rows ?? 24));
+  const item = hovered(state, state.depth);
+  out.write(render(state, out.columns ?? 80, out.rows ?? 24, item ? outputFor(item) : ""));
 }
 
 function leave(): void {
@@ -32,11 +37,7 @@ function leave(): void {
 }
 
 function select(item: Item): void {
-  const text = renderTemplate(config.outputTemplate, {
-    name: item.name,
-    label: item.label,
-    id: item.id,
-  });
+  const text = outputFor(item);
   leave();
   try {
     sendText(targetPane, `${text} `);
@@ -54,7 +55,7 @@ out.on("resize", draw);
 draw();
 
 inp.on("data", (chunk: string) => {
-  for (const action of parseKeys(chunk, state.search)) {
+  for (const action of parseKeys(chunk)) {
     const effect = reduce(state, action);
     if (effect?.type === "select") return select(effect.item);
     if (effect?.type === "quit") {
