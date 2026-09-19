@@ -31,7 +31,9 @@ your prompt, before you could have finished typing its description.
   one line of config.
 
 The picker only reads the session through the Herdr CLI and types one string
-into the calling pane. It never submits the prompt.
+into the calling pane. It never submits the prompt. Acting on the id is the
+job of Herdr's official agent skill (`herdr --skill`); this plugin only
+generates the pointer.
 
 ## Install
 
@@ -88,8 +90,9 @@ herdr:dev-server(w2:p2)
 ```
 
 The text goes through `herdr pane send-text` with one trailing space and is
-not submitted, so you keep typing. Agents that know Herdr read the id from the
-parentheses; the `herdr:` prefix is there so humans can read it too.
+not submitted, so you keep typing. The `herdr:` prefix is for humans; the id
+in the parentheses is what an agent with Herdr's official skill loaded acts
+on. Without that skill the string is just text.
 
 ## Configuration
 
