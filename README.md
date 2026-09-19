@@ -13,6 +13,9 @@ Vague targets cost twice: your tokens to describe them, the agent's to go
 find them. This popup ends both. Pick the pane, its Herdr id lands in the
 prompt, and the agent acts on exactly that one.
 
+Three keystrokes, three seconds. Open, arrow, Enter, and the exact pane is in
+your prompt, before you could have finished typing its description.
+
 ![The picker opens over an agent pane, a fast key and a typed filter narrow it to dev-server, and Enter types herdr:dev-server(w2:p2) into the prompt](docs/media/demo.gif)
 
 - **Three linked columns** — spaces, their tabs, and the tabs' panes, always
