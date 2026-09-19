@@ -1,36 +1,41 @@
 # herdr-target-picker
 
-A [Herdr](https://herdr.dev) plugin that opens a popup listing your spaces,
-tabs, and panes, and types the one you pick into the pane you called it from.
-Built for telling a coding agent *which* pane or agent you mean without
-looking up ids by hand.
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
+![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
+![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
 
-```
- ╭──────────────────────────────────────────────────────────────────╮
- │ Type to filter                                                   │
- ╰──────────────────────────────────────────────────────────────────╯
+<p align="center">
+  <a href="#install">install</a> · <a href="#keys">keys</a> · <a href="#what-gets-typed">what gets typed</a> · <a href="#configuration">configuration</a>
+</p>
 
- Spaces (1/1)              Tabs (1/1)               Panes (1/1)
- ▶ api                     chat                     assistant (claude)  1
-   web                     server                   tests               2
-   docs
+Vague targets cost twice: your tokens to describe them, the agent's to go
+find them. This popup ends both. Pick the pane, its Herdr id lands in the
+prompt, and the agent acts on exactly that one.
 
- Type : Filter   ↑/↓ : Select   ← : Back   → : Choose   1~9 : Fast key
- PgUp/PgDn : Page   Ctrl-U : Clear   Enter : Confirm   Esc : Clear / Close
-```
+![The picker opens over an agent pane, a fast key and a typed filter narrow it to dev-server, and Enter types herdr:dev-server(w2:p2) into the prompt](docs/media/demo.gif)
 
-Press Enter on `assistant (claude)` above and the calling pane receives:
+- **Three linked columns** — spaces, their tabs, and the tabs' panes, always
+  one path from left to right.
+- **Fast keys** — `1`–`9` on the active column; two keystrokes reach any pane
+  on the first page.
+- **Type to filter** — no search mode; start typing and the column narrows.
+- **Confirm any level** — `Enter` on a space sends the space, on a pane sends
+  the pane.
+- **Starts where you are** — the hover opens on the space, tab, and pane you
+  called it from.
+- **Your format** — `herdr:{name}({id})` by default; change the template in
+  one line of config.
 
-```
-herdr:assistant(w1:p1) 
-```
+The picker only reads the session through the Herdr CLI and types one string
+into the calling pane. It never submits the prompt.
 
 ## Install
 
 Requires [Bun](https://bun.sh) on `PATH`.
 
 ```sh
-herdr plugin install <owner>/herdr-target-picker
+herdr plugin install navishachiku/herdr-target-picker
 ```
 
 Bind a key in `~/.config/herdr/config.toml` and reload with `prefix+shift+r`:
@@ -42,6 +47,8 @@ type = "plugin_action"
 command = "herdr-target-picker.open"
 description = "pick a herdr target"
 ```
+
+`prefix` is `ctrl+b` unless you changed it.
 
 ## Keys
 
@@ -57,23 +64,31 @@ description = "pick a herdr target"
 | `Enter` | Type the hovered item into the calling pane and close |
 | `Esc` | Clear the query; when it is already empty, close |
 
-The three columns always show one path: the hovered space's tabs, and the
-hovered tab's panes. Each column keeps its own query. Number badges appear on
-the column that accepts them, which is the column right of the last activated
-item, and disappear while a query is being typed. Any level can be confirmed,
-so `Enter` on a space sends the space.
+Each column keeps its own query. Number badges appear on the column that
+accepts them, which is the column right of the last activated item, and
+disappear while a query is being typed.
 
-The popup opens with the hover on the space, tab, and pane you called it from.
+## What gets typed
 
-## Labels
+Items are shown by name and sent through the output template:
 
-| Level | Shown as |
+| Level | Name |
 | --- | --- |
 | Space | workspace label |
 | Tab | tab label |
 | Pane | pane name (`herdr pane rename`), else `agent-name (kind)`, else agent kind, else `shell` |
 
-## Config
+With the default template, choosing the pane named `dev-server` in `w2` types:
+
+```
+herdr:dev-server(w2:p2) 
+```
+
+The text goes through `herdr pane send-text` with one trailing space and is
+not submitted, so you keep typing. Agents that know Herdr read the id from the
+parentheses; the `herdr:` prefix is there so humans can read it too.
+
+## Configuration
 
 The first run writes `config.toml` to the plugin config directory
 (`herdr plugin config-dir herdr-target-picker`):
@@ -84,24 +99,22 @@ output_template = "herdr:{name}({id})"
 
 | Token | Value |
 | --- | --- |
-| `{name}` | pane name, else agent name, else agent kind, else `shell`; spaces and tabs use their label |
-| `{label}` | the text shown in the column, e.g. `hqcommit (claude)` |
-| `{id}` | herdr id, e.g. `w8:p1G` |
-
-The text is sent with `herdr pane send-text` followed by one space, and is not
-submitted; you keep typing.
+| `{name}` | the name from the table above |
+| `{label}` | the text shown in the column, e.g. `reviewer (codex)` |
+| `{id}` | Herdr id, e.g. `w2:p2` |
 
 ## Development
 
 ```sh
-git clone https://github.com/<owner>/herdr-target-picker
+git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
 bun test
 ```
 
-Windows is not declared in the manifest: the raw-mode key handling has not
-been tested under ConPTY.
+The popup is `src/main.ts`; the picker state lives in `src/model.ts` and is
+covered by `src/model.test.ts`. Windows is not declared in the manifest: the
+raw-mode key handling has not been tested under ConPTY.
 
 ## License
 
-MIT
+[MIT](LICENSE)
