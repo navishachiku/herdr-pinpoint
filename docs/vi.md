@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
-![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
-![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
+![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux%20%E2%80%A2%20Windows%20(preview)-informational)
+![Runtime](https://img.shields.io/badge/runtime-Node%2018%2B-5fa04e)
 
 <p align="center">
   <a href="#cài-đặt">cài đặt</a> · <a href="#phím">phím</a> · <a href="#nội-dung-được-gõ">nội dung được gõ</a> · <a href="#cấu-hình">cấu hình</a>
@@ -39,7 +39,7 @@ của Herdr (`herdr --skill`); plugin này chỉ tạo ra con trỏ.
 
 ## Cài đặt
 
-Cần có [Bun](https://bun.sh) trên `PATH`.
+Cần Node 18 trở lên trên `PATH`; không có dependency nào.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -116,12 +116,18 @@ output_template = "herdr:{name}({id})"
 ```sh
 git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
-bun test
+npm test
 ```
 
-Popup là `src/main.ts`; trạng thái bộ chọn nằm ở `src/model.ts` và được
-`src/model.test.ts` bao phủ. Windows không được khai báo trong manifest: xử
-lý phím ở chế độ raw chưa được kiểm thử dưới ConPTY.
+Popup là `src/main.mjs`; trạng thái bộ chọn nằm ở `src/model.mjs` và được
+`src/model.test.mjs` bao phủ. JavaScript thuần, không có bước build.
+
+## Windows
+
+Đã khai báo trong manifest và chạy cùng một mã: không có gì trong plugin dành
+riêng cho Unix, và đầu vào chế độ raw của Node trả về cùng các escape sequence
+dưới ConPTY. Hỗ trợ plugin của chính Herdr trên Windows đang ở giai đoạn preview,
+nên hãy xem ở đây cũng vậy và báo lại bất kỳ hành vi bất thường nào.
 
 ## Giấy phép
 

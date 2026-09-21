@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
-![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
-![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
+![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux%20%E2%80%A2%20Windows%20(preview)-informational)
+![Runtime](https://img.shields.io/badge/runtime-Node%2018%2B-5fa04e)
 
 <p align="center">
   <a href="#installation">installation</a> · <a href="#touches">touches</a> · <a href="#ce-qui-est-saisi">ce qui est saisi</a> · <a href="#configuration">configuration</a>
@@ -41,7 +41,7 @@ que générer le pointeur.
 
 ## Installation
 
-Nécessite [Bun](https://bun.sh) dans le `PATH`.
+Nécessite Node 18 ou plus récent dans le `PATH` ; aucune dépendance.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -120,12 +120,18 @@ output_template = "herdr:{name}({id})"
 ```sh
 git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
-bun test
+npm test
 ```
 
-Le popup est `src/main.ts` ; l'état du sélecteur vit dans `src/model.ts` et
-est couvert par `src/model.test.ts`. Windows n'est pas déclaré dans le
-manifeste : la gestion des touches en mode raw n'a pas été testée sous ConPTY.
+Le popup est `src/main.mjs` ; l'état du sélecteur vit dans `src/model.mjs` et
+est couvert par `src/model.test.mjs`. JavaScript pur, sans étape de build.
+
+## Windows
+
+Déclaré dans le manifeste et exécute le même code : rien dans le plugin n'est
+spécifique à Unix, et l'entrée en mode raw de Node fournit les mêmes séquences
+d'échappement sous ConPTY. Le support des plugins par Herdr sur Windows est en
+preview ; traitez-le de la même façon ici et signalez tout comportement anormal.
 
 ## Licence
 

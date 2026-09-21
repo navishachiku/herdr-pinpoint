@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
-![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
-![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
+![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux%20%E2%80%A2%20Windows%20(preview)-informational)
+![Runtime](https://img.shields.io/badge/runtime-Node%2018%2B-5fa04e)
 
 <p align="center">
   <a href="#установка">установка</a> · <a href="#клавиши">клавиши</a> · <a href="#что-вводится">что вводится</a> · <a href="#настройка">настройка</a>
@@ -41,7 +41,7 @@ pane. Он никогда не отправляет промпт. Действо
 
 ## Установка
 
-Требуется [Bun](https://bun.sh) в `PATH`.
+Требуется Node 18 или новее в `PATH`; зависимостей нет.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -119,12 +119,18 @@ output_template = "herdr:{name}({id})"
 ```sh
 git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
-bun test
+npm test
 ```
 
-Попап — это `src/main.ts`; состояние пикера живёт в `src/model.ts` и покрыто
-`src/model.test.ts`. Windows не объявлен в манифесте: обработка клавиш в
-raw-режиме не проверялась под ConPTY.
+Попап — это `src/main.mjs`; состояние пикера живёт в `src/model.mjs` и покрыто
+`src/model.test.mjs`. Чистый JavaScript, без шага сборки.
+
+## Windows
+
+Объявлено в манифесте и работает на том же коде: в плагине нет ничего
+специфичного для Unix, а raw-режим ввода Node выдаёт те же escape-последовательности
+под ConPTY. Поддержка плагинов в самом Herdr на Windows пока в preview, так что
+относитесь к ней здесь так же и сообщайте обо всём, что ведёт себя неправильно.
 
 ## Лицензия
 

@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
-![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
-![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
+![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux%20%E2%80%A2%20Windows%20(preview)-informational)
+![Runtime](https://img.shields.io/badge/runtime-Node%2018%2B-5fa04e)
 
 <p align="center">
   <a href="#安裝">安裝</a> · <a href="#按鍵">按鍵</a> · <a href="#輸出的內容">輸出的內容</a> · <a href="#設定">設定</a>
@@ -28,7 +28,7 @@ Herdr 的跨窗交談很讚，但你是否也覺得描述目標很花時間，�
 
 ## 安裝
 
-需要 `PATH` 上有 [Bun](https://bun.sh)。
+需要 `PATH` 上有 Node 18 或更新版本；沒有任何依賴。
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -99,10 +99,14 @@ output_template = "herdr:{name}({id})"
 ```sh
 git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
-bun test
+npm test
 ```
 
-彈出視窗在 `src/main.ts`；選擇器狀態在 `src/model.ts`，由 `src/model.test.ts` 覆蓋。manifest 未宣告 Windows：raw-mode 按鍵處理尚未在 ConPTY 下測試過。
+彈出視窗在 `src/main.mjs`；選擇器狀態在 `src/model.mjs`，由 `src/model.test.mjs` 覆蓋。純 JavaScript，沒有建置步驟。
+
+## Windows
+
+已在 manifest 中宣告，跑的是同一份程式碼：插件裡沒有任何 Unix 專屬的部分，Node 的 raw 模式輸入在 ConPTY 下送出同樣的跳脫序列。Herdr 自身的 Windows 插件支援仍在 preview，這裡也按同樣標準看待，遇到異常請回報。
 
 ## 授權
 

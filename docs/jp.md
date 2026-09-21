@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
-![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
-![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
+![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux%20%E2%80%A2%20Windows%20(preview)-informational)
+![Runtime](https://img.shields.io/badge/runtime-Node%2018%2B-5fa04e)
 
 <p align="center">
   <a href="#インストール">インストール</a> · <a href="#キー">キー</a> · <a href="#入力される内容">入力される内容</a> · <a href="#設定">設定</a>
@@ -28,7 +28,7 @@ Herdr の pane をまたいだやり取りは最高。でも「ターゲット�
 
 ## インストール
 
-`PATH` 上に [Bun](https://bun.sh) が必要です。
+`PATH` 上に Node 18 以降が必要です。依存パッケージはありません。
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -99,10 +99,14 @@ output_template = "herdr:{name}({id})"
 ```sh
 git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
-bun test
+npm test
 ```
 
-ポップアップは `src/main.ts`、ピッカーの状態は `src/model.ts` にあり、`src/model.test.ts` でカバーされています。manifest に Windows は宣言していません。raw モードのキー処理を ConPTY で検証していないためです。
+ポップアップは `src/main.mjs`、ピッカーの状態は `src/model.mjs` にあり、`src/model.test.mjs` でカバーされています。素の JavaScript で、ビルド手順はありません。
+
+## Windows
+
+manifest に宣言済みで、同じコードで動きます。プラグインに Unix 固有の部分はなく、Node の raw モード入力は ConPTY でも同じエスケープシーケンスを返します。Herdr 自身の Windows プラグイン対応はプレビュー段階なので、ここでも同じ扱いとし、おかしな挙動があれば報告してください。
 
 ## ライセンス
 

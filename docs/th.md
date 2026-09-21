@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
-![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
-![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
+![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux%20%E2%80%A2%20Windows%20(preview)-informational)
+![Runtime](https://img.shields.io/badge/runtime-Node%2018%2B-5fa04e)
 
 <p align="center">
   <a href="#การติดตั้ง">การติดตั้ง</a> · <a href="#ปุ่ม">ปุ่ม</a> · <a href="#สิ่งที่ถูกพิมพ์">สิ่งที่ถูกพิมพ์</a> · <a href="#การตั้งค่า">การตั้งค่า</a>
@@ -34,7 +34,7 @@ prompt และ agent จะทำงานกับ pane นั้นเท่
 
 ## การติดตั้ง
 
-ต้องมี [Bun](https://bun.sh) ใน `PATH`
+ต้องมี Node 18 ขึ้นไปใน `PATH` ไม่มี dependency
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -109,12 +109,18 @@ output_template = "herdr:{name}({id})"
 ```sh
 git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
-bun test
+npm test
 ```
 
-ป๊อปอัปอยู่ที่ `src/main.ts`; สถานะของตัวเลือกอยู่ใน `src/model.ts` และครอบคลุมโดย
-`src/model.test.ts` ไม่ได้ประกาศ Windows ใน manifest: การจัดการปุ่มในโหมด raw
-ยังไม่ได้ทดสอบภายใต้ ConPTY
+ป๊อปอัปอยู่ที่ `src/main.mjs`; สถานะของตัวเลือกอยู่ใน `src/model.mjs` และครอบคลุมโดย
+`src/model.test.mjs` เป็น JavaScript ล้วน ไม่มีขั้นตอน build
+
+## Windows
+
+ประกาศไว้ใน manifest และรันด้วยโค้ดเดียวกัน: ไม่มีส่วนใดของปลั๊กอินที่เจาะจง Unix
+และอินพุตโหมด raw ของ Node ส่ง escape sequence แบบเดียวกันภายใต้ ConPTY
+การรองรับปลั๊กอินบน Windows ของ Herdr เองยังอยู่ในขั้น preview จึงถือว่าที่นี่ก็เช่นกัน
+พบอะไรผิดปกติโปรดรายงาน
 
 ## สัญญาอนุญาต
 

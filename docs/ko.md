@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
-![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux-informational)
-![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
+![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux%20%E2%80%A2%20Windows%20(preview)-informational)
+![Runtime](https://img.shields.io/badge/runtime-Node%2018%2B-5fa04e)
 
 <p align="center">
   <a href="#설치">설치</a> · <a href="#키">키</a> · <a href="#입력되는-내용">입력되는 내용</a> · <a href="#설정">설정</a>
@@ -28,7 +28,7 @@ Herdr에서 pane 넘나들며 대화하는 건 진짜 좋은데, 대상 설명�
 
 ## 설치
 
-`PATH`에 [Bun](https://bun.sh)이 필요합니다.
+`PATH`에 Node 18 이상이 필요합니다. 의존성은 없습니다.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -99,10 +99,14 @@ output_template = "herdr:{name}({id})"
 ```sh
 git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
-bun test
+npm test
 ```
 
-팝업은 `src/main.ts`, 피커 상태는 `src/model.ts`에 있으며 `src/model.test.ts`가 다룹니다. manifest에 Windows는 선언하지 않았습니다. raw 모드 키 처리를 ConPTY에서 테스트하지 않았기 때문입니다.
+팝업은 `src/main.mjs`, 피커 상태는 `src/model.mjs`에 있으며 `src/model.test.mjs`가 다룹니다. 순수 JavaScript이며 빌드 단계가 없습니다.
+
+## Windows
+
+manifest에 선언되어 있고 같은 코드로 동작합니다. 플러그인에 Unix 전용 부분은 없고, Node의 raw 모드 입력은 ConPTY에서도 같은 이스케이프 시퀀스를 전달합니다. Herdr 자체의 Windows 플러그인 지원이 프리뷰 단계이므로 여기서도 같은 수준으로 보고, 이상한 동작은 제보해 주세요.
 
 ## 라이선스
 
