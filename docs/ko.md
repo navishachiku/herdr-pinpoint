@@ -28,7 +28,7 @@ Herdr에서 pane 넘나들며 대화하는 건 진짜 좋은데, 대상 설명�
 
 ## 설치
 
-`PATH`에 Node 18 이상이 필요합니다. 의존성은 없습니다.
+Node 18 이상이 필요합니다.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -106,7 +106,7 @@ npm test
 
 ## Windows
 
-manifest에 선언되어 있고 같은 코드로 동작합니다. 플러그인에 Unix 전용 부분은 없고, Node의 raw 모드 입력은 ConPTY에서도 같은 이스케이프 시퀀스를 전달합니다. Herdr 자체의 Windows 플러그인 지원이 프리뷰 단계이므로 여기서도 같은 수준으로 보고, 이상한 동작은 제보해 주세요.
+Windows 지원은 프리뷰 단계입니다. 이상한 동작은 제보해 주세요.
 
 ## 라이선스
 

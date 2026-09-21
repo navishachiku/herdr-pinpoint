@@ -28,7 +28,7 @@ Herdr の pane をまたいだやり取りは最高。でも「ターゲット�
 
 ## インストール
 
-`PATH` 上に Node 18 以降が必要です。依存パッケージはありません。
+Node 18 以降が必要です。
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -106,7 +106,7 @@ npm test
 
 ## Windows
 
-manifest に宣言済みで、同じコードで動きます。プラグインに Unix 固有の部分はなく、Node の raw モード入力は ConPTY でも同じエスケープシーケンスを返します。Herdr 自身の Windows プラグイン対応はプレビュー段階なので、ここでも同じ扱いとし、おかしな挙動があれば報告してください。
+Windows 対応はプレビューです。おかしな挙動があれば報告してください。
 
 ## ライセンス
 

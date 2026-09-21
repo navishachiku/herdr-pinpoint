@@ -41,7 +41,7 @@ que générer le pointeur.
 
 ## Installation
 
-Nécessite Node 18 ou plus récent dans le `PATH` ; aucune dépendance.
+Nécessite Node 18 ou plus récent.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -128,10 +128,7 @@ est couvert par `src/model.test.mjs`. JavaScript pur, sans étape de build.
 
 ## Windows
 
-Déclaré dans le manifeste et exécute le même code : rien dans le plugin n'est
-spécifique à Unix, et l'entrée en mode raw de Node fournit les mêmes séquences
-d'échappement sous ConPTY. Le support des plugins par Herdr sur Windows est en
-preview ; traitez-le de la même façon ici et signalez tout comportement anormal.
+Le support de Windows est en preview. Signalez tout comportement anormal.
 
 ## Licence
 

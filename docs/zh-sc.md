@@ -28,7 +28,7 @@ Herdr 跨窗口聊天很牛，但你是不是也觉得描述目标挺费劲的�
 
 ## 安装
 
-需要 `PATH` 上有 Node 18 或更新版本；没有任何依赖。
+需要 Node 18 或更新版本。
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -106,7 +106,7 @@ npm test
 
 ## Windows
 
-已在 manifest 中声明，跑的是同一份代码：插件里没有任何 Unix 专属的部分，Node 的 raw 模式输入在 ConPTY 下送出同样的转义序列。Herdr 自身的 Windows 插件支持仍处于 preview，这里也按同样标准看待，遇到异常请回报。
+Windows 支持处于 preview。遇到异常请回报。
 
 ## 许可证
 

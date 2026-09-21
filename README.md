@@ -42,7 +42,7 @@ generates the pointer.
 
 ## Install
 
-Requires Node 18 or newer on `PATH`; there are no dependencies.
+Requires Node 18 or newer.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -127,10 +127,7 @@ is covered by `src/model.test.mjs`. Plain JavaScript, no build step.
 
 ## Windows
 
-Declared in the manifest and runs on the same code: nothing in the plugin is
-Unix-specific, and Node's raw-mode input delivers the same escape sequences
-under ConPTY. Herdr's own plugin support on Windows is in preview, so treat
-it the same way here and report anything that misbehaves.
+Windows support is preview. Report anything that misbehaves.
 
 ## License
 

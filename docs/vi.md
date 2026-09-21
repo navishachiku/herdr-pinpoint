@@ -39,7 +39,7 @@ của Herdr (`herdr --skill`); plugin này chỉ tạo ra con trỏ.
 
 ## Cài đặt
 
-Cần Node 18 trở lên trên `PATH`; không có dependency nào.
+Cần Node 18 trở lên.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -124,10 +124,7 @@ Popup là `src/main.mjs`; trạng thái bộ chọn nằm ở `src/model.mjs` v�
 
 ## Windows
 
-Đã khai báo trong manifest và chạy cùng một mã: không có gì trong plugin dành
-riêng cho Unix, và đầu vào chế độ raw của Node trả về cùng các escape sequence
-dưới ConPTY. Hỗ trợ plugin của chính Herdr trên Windows đang ở giai đoạn preview,
-nên hãy xem ở đây cũng vậy và báo lại bất kỳ hành vi bất thường nào.
+Hỗ trợ Windows đang ở giai đoạn preview. Hãy báo lại bất kỳ hành vi bất thường nào.
 
 ## Giấy phép
 

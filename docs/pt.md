@@ -40,7 +40,7 @@ oficial de agente do Herdr (`herdr --skill`); este plugin só gera o ponteiro.
 
 ## Instalação
 
-Requer Node 18 ou mais recente no `PATH`; não há dependências.
+Requer Node 18 ou mais recente.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -126,10 +126,7 @@ coberto por `src/model.test.mjs`. JavaScript puro, sem etapa de build.
 
 ## Windows
 
-Declarado no manifesto e roda com o mesmo código: nada no plugin é específico
-de Unix, e a entrada em modo raw do Node entrega as mesmas sequências de escape
-sob ConPTY. O suporte a plugins do próprio Herdr no Windows está em preview,
-então trate-o da mesma forma aqui e relate qualquer comportamento estranho.
+O suporte a Windows está em preview. Relate qualquer comportamento estranho.
 
 ## Licença
 

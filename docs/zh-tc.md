@@ -28,7 +28,7 @@ Herdr 的跨窗交談很讚，但你是否也覺得描述目標很花時間，�
 
 ## 安裝
 
-需要 `PATH` 上有 Node 18 或更新版本；沒有任何依賴。
+需要 Node 18 或更新版本。
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -106,7 +106,7 @@ npm test
 
 ## Windows
 
-已在 manifest 中宣告，跑的是同一份程式碼：插件裡沒有任何 Unix 專屬的部分，Node 的 raw 模式輸入在 ConPTY 下送出同樣的跳脫序列。Herdr 自身的 Windows 插件支援仍在 preview，這裡也按同樣標準看待，遇到異常請回報。
+Windows 支援處於 preview。遇到異常請回報。
 
 ## 授權
 

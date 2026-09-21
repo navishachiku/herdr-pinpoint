@@ -42,7 +42,7 @@ solo il puntatore.
 
 ## Installazione
 
-Richiede Node 18 o più recente nel `PATH`; nessuna dipendenza.
+Richiede Node 18 o più recente.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -129,10 +129,7 @@ coperto da `src/model.test.mjs`. JavaScript puro, nessun passo di build.
 
 ## Windows
 
-Dichiarato nel manifest e gira sullo stesso codice: nulla nel plugin è
-specifico di Unix, e l'input in modalità raw di Node fornisce le stesse
-sequenze di escape sotto ConPTY. Il supporto ai plugin di Herdr su Windows è in
-preview, quindi trattalo allo stesso modo qui e segnala qualsiasi anomalia.
+Il supporto a Windows è in preview. Segnala qualsiasi anomalia.
 
 ## Licenza
 

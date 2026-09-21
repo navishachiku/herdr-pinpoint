@@ -42,7 +42,7 @@ erzeugt nur den Zeiger.
 
 ## Installation
 
-Benötigt Node 18 oder neuer im `PATH`; es gibt keine Abhängigkeiten.
+Benötigt Node 18 oder neuer.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -130,10 +130,7 @@ wird von `src/model.test.mjs` abgedeckt. Reines JavaScript, kein Build-Schritt.
 
 ## Windows
 
-Im Manifest deklariert und läuft mit demselben Code: nichts im Plugin ist
-Unix-spezifisch, und Nodes Raw-Modus-Eingabe liefert unter ConPTY dieselben
-Escape-Sequenzen. Herdrs eigene Plugin-Unterstützung unter Windows ist noch
-Preview, also behandle sie hier genauso und melde alles, was sich falsch verhält.
+Die Windows-Unterstützung ist Preview. Melde alles, was sich falsch verhält.
 
 ## Lizenz
 

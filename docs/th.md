@@ -34,7 +34,7 @@ prompt และ agent จะทำงานกับ pane นั้นเท่
 
 ## การติดตั้ง
 
-ต้องมี Node 18 ขึ้นไปใน `PATH` ไม่มี dependency
+ต้องมี Node 18 ขึ้นไป
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -117,10 +117,7 @@ npm test
 
 ## Windows
 
-ประกาศไว้ใน manifest และรันด้วยโค้ดเดียวกัน: ไม่มีส่วนใดของปลั๊กอินที่เจาะจง Unix
-และอินพุตโหมด raw ของ Node ส่ง escape sequence แบบเดียวกันภายใต้ ConPTY
-การรองรับปลั๊กอินบน Windows ของ Herdr เองยังอยู่ในขั้น preview จึงถือว่าที่นี่ก็เช่นกัน
-พบอะไรผิดปกติโปรดรายงาน
+การรองรับ Windows อยู่ในขั้น preview พบอะไรผิดปกติโปรดรายงาน
 
 ## สัญญาอนุญาต
 
