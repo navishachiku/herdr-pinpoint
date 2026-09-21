@@ -3,7 +3,7 @@ name = "Target Picker"
 version = "0.1.0"
 min_herdr_version = "0.9.0"
 description = "Pick a space, tab, or pane and type its herdr id into the agent you called from"
-platforms = ["macos", "linux"]
+platforms = ["macos", "linux", "windows"]
 
 # Keybindings can only invoke actions, so `open` is the entry point that
 # launches the popup pane below.
