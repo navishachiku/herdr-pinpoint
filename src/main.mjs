@@ -1,13 +1,13 @@
-import { loadConfig, renderTemplate } from "./config";
-import { loadContext, loadTree, sendText } from "./herdr";
-import { parseKeys } from "./keys";
-import { hovered, initialState, reduce, toItems, type Item } from "./model";
-import { render } from "./render";
+import { loadConfig, renderTemplate } from "./config.mjs";
+import { loadContext, loadTree, sendText } from "./herdr.mjs";
+import { parseKeys } from "./keys.mjs";
+import { hovered, initialState, reduce, toItems } from "./model.mjs";
+import { render } from "./render.mjs";
 
 const ALT_SCREEN_ON = "\x1b[?1049h\x1b[?25l";
 const ALT_SCREEN_OFF = "\x1b[?25h\x1b[?1049l";
 
-function fail(message: string): never {
+function fail(message) {
   process.stderr.write(`herdr-target-picker: ${message}\n`);
   process.exit(1);
 }
@@ -22,27 +22,27 @@ const state = initialState(toItems(loadTree()), [context.workspaceId, context.ta
 const out = process.stdout;
 const inp = process.stdin;
 
-function outputFor(item: Item): string {
+function outputFor(item) {
   return renderTemplate(config.outputTemplate, { name: item.name, label: item.label, id: item.id });
 }
 
-function draw(): void {
+function draw() {
   const item = hovered(state, state.depth);
   out.write(render(state, out.columns ?? 80, out.rows ?? 24, item ? outputFor(item) : ""));
 }
 
-function leave(): void {
+function leave() {
   inp.setRawMode(false);
   out.write(ALT_SCREEN_OFF);
 }
 
-function select(item: Item): void {
+function select(item) {
   const text = outputFor(item);
   leave();
   try {
     sendText(targetPane, `${text} `);
   } catch (err) {
-    fail((err as Error).message);
+    fail(err.message);
   }
   process.exit(0);
 }
@@ -54,7 +54,7 @@ out.write(ALT_SCREEN_ON);
 out.on("resize", draw);
 draw();
 
-inp.on("data", (chunk: string) => {
+inp.on("data", (chunk) => {
   for (const action of parseKeys(chunk)) {
     const effect = reduce(state, action);
     if (effect?.type === "select") return select(effect.item);

@@ -1,12 +1,10 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export interface Config {
-  /** Text typed into the calling pane. Tokens: {name}, {label}, {id}. */
-  outputTemplate: string;
-}
+/** @typedef {{ outputTemplate: string }} Config  Text typed into the calling pane; tokens {name}, {label}, {id}. */
 
-export const DEFAULT_CONFIG: Config = {
+/** @type {Config} */
+export const DEFAULT_CONFIG = {
   outputTemplate: "herdr:{name}({id})",
 };
 
@@ -21,8 +19,12 @@ const TEMPLATE = `# herdr-target-picker
 output_template = "${DEFAULT_CONFIG.outputTemplate}"
 `;
 
-/** Reads config.toml under the plugin config dir, writing the default first if absent. */
-export function loadConfig(dir: string | undefined): Config {
+/**
+ * Reads config.toml under the plugin config dir, writing the default first if absent.
+ * @param {string | undefined} dir
+ * @returns {Config}
+ */
+export function loadConfig(dir) {
   if (!dir) return DEFAULT_CONFIG;
   const path = join(dir, "config.toml");
   if (!existsSync(path)) {
@@ -33,9 +35,13 @@ export function loadConfig(dir: string | undefined): Config {
   return parseConfig(readFileSync(path, "utf8"));
 }
 
-/** Only `key = "string"` lines are needed; a full TOML parser would be a dependency. */
-export function parseConfig(text: string): Config {
-  const values = new Map<string, string>();
+/**
+ * Only `key = "string"` lines are needed; a full TOML parser would be a dependency.
+ * @param {string} text
+ * @returns {Config}
+ */
+export function parseConfig(text) {
+  const values = new Map();
   for (const line of text.split("\n")) {
     const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*"((?:[^"\\]|\\.)*)"\s*(#.*)?$/);
     if (m) values.set(m[1], JSON.parse(`"${m[2]}"`));
@@ -45,6 +51,10 @@ export function parseConfig(text: string): Config {
   };
 }
 
-export function renderTemplate(template: string, vars: Record<string, string>): string {
+/**
+ * @param {string} template
+ * @param {Record<string, string>} vars
+ */
+export function renderTemplate(template, vars) {
   return template.replace(/\{(\w+)\}/g, (whole, key) => vars[key] ?? whole);
 }

@@ -1,49 +1,24 @@
 // Pure picker state. No terminal, no herdr calls; everything here is unit-testable.
 
-import type { Space } from "./herdr";
 
 export const PAGE_SIZE = 9;
 export const LEVELS = 3;
-export const LEVEL_TITLES = ["Spaces", "Tabs", "Panes"] as const;
+export const LEVEL_TITLES = ["Spaces", "Tabs", "Panes"];
 
-export interface Item {
-  id: string;
-  /** Text shown in the column, e.g. `hqcommit (claude)`. */
-  label: string;
-  /** Bare handle for the output template, e.g. `hqcommit`. */
-  name: string;
-  children: Item[];
-}
+/**
+ * @typedef {{ id: string, label: string, name: string, children: Item[] }} Item
+ *   label: text shown in the column, e.g. `hqcommit (claude)`;
+ *   name: bare handle for the output template, e.g. `hqcommit`.
+ * @typedef {{ root: Item[], depth: number, hover: number[], page: number[], filter: string[] }} State
+ *   depth: column that receives navigation keys; every column left of it has an Actived item;
+ *   hover, page, filter: per column — index into the filtered list, 0-based page, search text.
+ * @typedef {{ type: "up" | "down" | "choose" | "back" | "pageUp" | "pageDown" | "backspace" | "clear" | "enter" | "escape" }
+ *   | { type: "digit", n: number } | { type: "input", char: string }} Action
+ * @typedef {{ type: "select", item: Item } | { type: "quit" } | null} Effect
+ */
 
-export interface State {
-  root: Item[];
-  /** Column that receives navigation keys; every column left of it has an Actived item. */
-  depth: number;
-  /** Per column: index into the filtered list. */
-  hover: number[];
-  /** Per column: 0-based page. */
-  page: number[];
-  /** Per column: search text. Typing always edits `filter[depth]`. */
-  filter: string[];
-}
-
-export type Action =
-  | { type: "up" }
-  | { type: "down" }
-  | { type: "choose" }
-  | { type: "back" }
-  | { type: "pageUp" }
-  | { type: "pageDown" }
-  | { type: "digit"; n: number }
-  | { type: "input"; char: string }
-  | { type: "backspace" }
-  | { type: "clear" }
-  | { type: "enter" }
-  | { type: "escape" };
-
-export type Effect = { type: "select"; item: Item } | { type: "quit" } | null;
-
-export function toItems(spaces: Space[]): Item[] {
+/** @param {import("./herdr.mjs").Space[]} spaces @returns {Item[]} */
+export function toItems(spaces) {
   return spaces.map((s) => ({
     id: s.id,
     label: s.label,
@@ -62,8 +37,9 @@ export function toItems(spaces: Space[]): Item[] {
   }));
 }
 
-export function initialState(root: Item[], path: (string | null)[]): State {
-  const state: State = {
+/** @param {Item[]} root @param {(string | null)[]} path @returns {State} */
+export function initialState(root, path) {
+  const state = {
     root,
     depth: 0,
     hover: [0, 0, 0],
@@ -81,13 +57,14 @@ export function initialState(root: Item[], path: (string | null)[]): State {
   return state;
 }
 
-function matches(item: Item, filter: string): boolean {
+function matches(item, filter) {
   const q = filter.toLowerCase();
   return item.label.toLowerCase().includes(q) || item.id.toLowerCase().includes(q);
 }
 
 /** Filtered items of one column, following the hover path from the root. */
-export function column(state: State, level: number): Item[] {
+/** @param {State} state @param {number} level @returns {Item[]} */
+export function column(state, level) {
   let items = state.root;
   for (let l = 0; l < level; l++) {
     const parent = items.filter((it) => matches(it, state.filter[l]))[state.hover[l]];
@@ -97,21 +74,22 @@ export function column(state: State, level: number): Item[] {
   return items.filter((it) => matches(it, state.filter[level]));
 }
 
-export function hovered(state: State, level: number): Item | undefined {
+/** @param {State} state @param {number} level @returns {Item | undefined} */
+export function hovered(state, level) {
   return column(state, level)[state.hover[level]];
 }
 
-export function pageCount(state: State, level: number): number {
+export function pageCount(state, level) {
   return Math.max(1, Math.ceil(column(state, level).length / PAGE_SIZE));
 }
 
 /** Items visible on the column's current page. */
-export function pageItems(state: State, level: number): Item[] {
+export function pageItems(state, level) {
   const start = state.page[level] * PAGE_SIZE;
   return column(state, level).slice(start, start + PAGE_SIZE);
 }
 
-function resetBelow(state: State, level: number): void {
+function resetBelow(state, level) {
   for (let l = level + 1; l < LEVELS; l++) {
     state.hover[l] = 0;
     state.page[l] = 0;
@@ -119,7 +97,7 @@ function resetBelow(state: State, level: number): void {
   }
 }
 
-function setHover(state: State, idx: number): void {
+function setHover(state, idx) {
   const count = column(state, state.depth).length;
   if (count === 0) return;
   const next = Math.max(0, Math.min(count - 1, idx));
@@ -129,20 +107,21 @@ function setHover(state: State, idx: number): void {
   resetBelow(state, state.depth);
 }
 
-function setPage(state: State, page: number): void {
+function setPage(state, page) {
   const next = Math.max(0, Math.min(pageCount(state, state.depth) - 1, page));
   state.page[state.depth] = next;
   setHover(state, next * PAGE_SIZE);
 }
 
-function setFilter(state: State, text: string): void {
+function setFilter(state, text) {
   state.filter[state.depth] = text;
   state.hover[state.depth] = 0;
   state.page[state.depth] = 0;
   resetBelow(state, state.depth);
 }
 
-export function reduce(state: State, action: Action): Effect {
+/** @param {State} state @param {Action} action @returns {Effect} */
+export function reduce(state, action) {
   const d = state.depth;
   switch (action.type) {
     case "input":
@@ -199,11 +178,12 @@ export function reduce(state: State, action: Action): Effect {
 }
 
 /** True when digits act as fast keys, i.e. nothing is typed in the current column. */
-export function fastKeysActive(state: State): boolean {
+/** @param {State} state */
+export function fastKeysActive(state) {
   return state.filter[state.depth] === "";
 }
 
-function choose(state: State): Effect {
+function choose(state) {
   if (!hovered(state, state.depth)) return null;
   if (state.depth < LEVELS - 1) state.depth += 1;
   return null;

@@ -1,6 +1,6 @@
 id = "herdr-target-picker"
 name = "Target Picker"
-version = "0.1.0"
+version = "0.2.0"
 min_herdr_version = "0.9.0"
 description = "Pick a space, tab, or pane and type its herdr id into the agent you called from"
 platforms = ["macos", "linux", "windows"]
@@ -11,7 +11,7 @@ platforms = ["macos", "linux", "windows"]
 id = "open"
 title = "Open target picker"
 contexts = ["pane"]
-command = ["bun", "src/open.ts"]
+command = ["node", "src/open.mjs"]
 
 [[panes]]
 id = "pick"
@@ -19,4 +19,4 @@ title = "Target Picker"
 placement = "popup"
 width = "80%"
 height = "80%"
-command = ["bun", "src/main.ts"]
+command = ["node", "src/main.mjs"]

@@ -1,6 +1,5 @@
-import type { Action } from "./model";
-
-const SEQUENCES: Record<string, Action> = {
+/** @type {Record<string, import("./model.mjs").Action>} */
+const SEQUENCES = {
   "\x1b[A": { type: "up" },
   "\x1b[B": { type: "down" },
   "\x1b[C": { type: "choose" },
@@ -25,12 +24,13 @@ const SEQUENCES: Record<string, Action> = {
  * digits are reported separately so the model can treat them as fast keys
  * while the query is empty.
  */
-export function parseKeys(chunk: string): Action[] {
+/** @param {string} chunk @returns {import("./model.mjs").Action[]} */
+export function parseKeys(chunk) {
   const known = SEQUENCES[chunk];
   if (known) return [known];
   if (chunk.startsWith("\x1b")) return [];
 
-  const actions: Action[] = [];
+  const actions = [];
   for (const char of chunk) {
     if (char >= "1" && char <= "9") actions.push({ type: "digit", n: Number(char) });
     else if (char >= " " && char !== "\x7f") actions.push({ type: "input", char });

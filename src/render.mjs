@@ -1,20 +1,12 @@
-import {
-  LEVELS,
-  fastKeysActive,
-  LEVEL_TITLES,
-  PAGE_SIZE,
-  column,
-  pageCount,
-  pageItems,
-  type State,
-} from "./model";
+import { LEVELS, LEVEL_TITLES, PAGE_SIZE, column, fastKeysActive, pageCount, pageItems } from "./model.mjs";
+import { width } from "./width.mjs";
 
 const RESET = "\x1b[0m";
 const BOLD = "\x1b[1m";
 
 // Herdr's default palette (catppuccin, src/app/state.rs in the herdr repo).
 // Plugins cannot read the active theme, so the default tokens are used as-is.
-const rgb = (r: number, g: number, b: number) => `${r};${g};${b}`;
+const rgb = (r, g, b) => `${r};${g};${b}`;
 const ACCENT = rgb(137, 180, 250);
 const OVERLAY0 = rgb(108, 112, 134);
 const SELECTION_BG = rgb(49, 50, 68);
@@ -39,9 +31,7 @@ const BOX_ROWS = 3;
 /** Boxed layout needs the search box, a gap, headers, nine boxes, and a gap before the footer. */
 const BOXED_MIN_ROWS = 3 + 1 + 1 + PAGE_SIZE * BOX_ROWS + 1;
 
-const width = (s: string) => Bun.stringWidth(s);
-
-function fit(s: string, max: number): string {
+function fit(s, max) {
   if (width(s) <= max) return s;
   let out = "";
   for (const ch of s) {
@@ -51,19 +41,17 @@ function fit(s: string, max: number): string {
   return out + "…";
 }
 
-function pad(s: string, max: number): string {
+function pad(s, max) {
   return s + " ".repeat(Math.max(0, max - width(s)));
 }
 
-interface Cell {
-  label: string;
-  key: string | null;
-  style: string;
-  /** Background applied to the content row (hover only). */
-  bg: string;
-}
+/**
+ * @typedef {{ label: string, key: string | null, style: string, bg: string }} Cell
+ *   bg: background applied to the content row (hover only).
+ */
 
-function cellData(state: State, level: number, row: number): Cell | null {
+/** @returns {Cell | null} */
+function cellData(state, level, row) {
   const item = pageItems(state, level)[row];
   if (!item) return null;
   const absolute = state.page[level] * PAGE_SIZE + row;
@@ -81,7 +69,7 @@ function cellData(state: State, level: number, row: number): Cell | null {
 }
 
 /** Rounded box, three rows, the key drawn as a small badge at the right edge. */
-function boxedCell(cell: Cell | null, colWidth: number): string[] {
+function boxedCell(cell, colWidth) {
   const blank = " ".repeat(colWidth);
   if (!cell) return [blank, blank, blank];
   const inner = colWidth - 2;
@@ -98,18 +86,18 @@ function boxedCell(cell: Cell | null, colWidth: number): string[] {
 }
 
 /** One-row fallback for short terminals. */
-function compactCell(cell: Cell | null, colWidth: number): string {
+function compactCell(cell, colWidth) {
   if (!cell) return " ".repeat(colWidth);
   const badge = cell.key ? `${KEY} ${cell.key} ${RESET}${cell.bg}` : "   ";
   const label = fit(cell.label, colWidth - 5);
   return `${cell.bg} ${cell.style}${pad(label, colWidth - 5)}${RESET}${cell.bg}${badge} ${RESET}`;
 }
 
-function joinColumns(parts: string[]): string {
+function joinColumns(parts) {
   return " ".repeat(GUTTER) + parts.join(" ".repeat(GAP));
 }
 
-function searchBox(state: State, inner: number): string[] {
+function searchBox(state, inner) {
   const filter = state.filter[state.depth];
   const placeholder = "Type to filter";
   const text = filter ? `${filter}\u258f` : placeholder;
@@ -122,7 +110,7 @@ function searchBox(state: State, inner: number): string[] {
   ].map((line) => " ".repeat(GUTTER) + line);
 }
 
-function headers(state: State, colWidth: number): string {
+function headers(state, colWidth) {
   return joinColumns(
     Array.from({ length: LEVELS }, (_, level) => {
       const count = column(state, level).length;
@@ -146,10 +134,10 @@ const HINTS = [
 ];
 
 /** Packs the key hints into as few lines as the width allows. */
-function footer(cols: number, preview: string): string[] {
+function footer(cols, preview) {
   const g = " ".repeat(GUTTER);
   const max = cols - GUTTER * 2;
-  const lines: string[] = [];
+  const lines = [];
   let current = "";
   for (const hint of HINTS) {
     const next = current ? `${current}    ${hint}` : hint;
@@ -167,13 +155,18 @@ function footer(cols: number, preview: string): string[] {
   ];
 }
 
-export function render(state: State, cols: number, rows: number, preview: string): string {
+/**
+ * @param {import("./model.mjs").State} state
+ * @param {number} cols @param {number} rows
+ * @param {string} preview  what Enter would send
+ */
+export function render(state, cols, rows, preview) {
   const inner = Math.max(30, cols - GUTTER * 2);
   const colWidth = Math.floor((inner - GAP * (LEVELS - 1)) / LEVELS);
   const bottom = footer(cols, preview);
   const boxed = rows >= BOXED_MIN_ROWS + bottom.length;
 
-  const lines: string[] = [...searchBox(state, inner - 2), "", headers(state, colWidth)];
+  const lines = [...searchBox(state, inner - 2), "", headers(state, colWidth)];
 
   for (let row = 0; row < PAGE_SIZE; row++) {
     const cells = Array.from({ length: LEVELS }, (_, level) => cellData(state, level, row));

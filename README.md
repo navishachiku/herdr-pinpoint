@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
 ![Platforms](https://img.shields.io/badge/platforms-macOS%20%E2%80%A2%20Linux%20%E2%80%A2%20Windows%20(preview)-informational)
-![Runtime](https://img.shields.io/badge/runtime-Bun-f9f1e1)
+![Runtime](https://img.shields.io/badge/runtime-Node%2018%2B-5fa04e)
 
 [English](./README.md) | [简体中文](./docs/zh-sc.md) | [繁體中文](./docs/zh-tc.md) | [Español](./docs/es.md) | [Português](./docs/pt.md) | [Русский](./docs/ru.md) | [日本語](./docs/jp.md) | [Français](./docs/fr.md) | [Deutsch](./docs/de.md) | [Tiếng Việt](./docs/vi.md) | [한국어](./docs/ko.md) | [ไทย](./docs/th.md) | [Italiano](./docs/it.md)
 
@@ -42,7 +42,7 @@ generates the pointer.
 
 ## Install
 
-Requires [Bun](https://bun.sh) on `PATH`.
+Requires Node 18 or newer on `PATH`; there are no dependencies.
 
 ```sh
 herdr plugin install navishachiku/herdr-target-picker
@@ -119,16 +119,16 @@ output_template = "herdr:{name}({id})"
 ```sh
 git clone https://github.com/navishachiku/herdr-target-picker
 herdr plugin link ./herdr-target-picker
-bun test
+npm test
 ```
 
-The popup is `src/main.ts`; the picker state lives in `src/model.ts` and is
-covered by `src/model.test.ts`.
+The popup is `src/main.mjs`; the picker state lives in `src/model.mjs` and
+is covered by `src/model.test.mjs`. Plain JavaScript, no build step.
 
 ## Windows
 
 Declared in the manifest and runs on the same code: nothing in the plugin is
-Unix-specific, and Bun's raw-mode input delivers the same escape sequences
+Unix-specific, and Node's raw-mode input delivers the same escape sequences
 under ConPTY. Herdr's own plugin support on Windows is in preview, so treat
 it the same way here and report anything that misbehaves.
 
