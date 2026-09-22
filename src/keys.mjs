@@ -20,11 +20,11 @@ const SEQUENCES = {
 };
 
 /**
- * Maps one stdin chunk to actions. Printable characters edit the query;
- * digits are reported separately so the model can treat them as fast keys
- * while the query is empty.
+ * Maps one stdin chunk to actions. `/` opens the query, digits are reported
+ * apart from other text, and the model decides what each means in the mode
+ * it is in; unknown escape sequences are dropped rather than typed.
+ * @param {string} chunk @returns {import("./model.mjs").Action[]}
  */
-/** @param {string} chunk @returns {import("./model.mjs").Action[]} */
 export function parseKeys(chunk) {
   const known = SEQUENCES[chunk];
   if (known) return [known];
@@ -32,7 +32,8 @@ export function parseKeys(chunk) {
 
   const actions = [];
   for (const char of chunk) {
-    if (char >= "1" && char <= "9") actions.push({ type: "digit", n: Number(char) });
+    if (char === "/") actions.push({ type: "query" });
+    else if (char >= "1" && char <= "9") actions.push({ type: "digit", n: Number(char) });
     else if (char >= " " && char !== "\x7f") actions.push({ type: "input", char });
   }
   return actions;

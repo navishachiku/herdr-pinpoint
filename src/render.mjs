@@ -1,4 +1,16 @@
-import { LEVELS, LEVEL_TITLES, PAGE_SIZE, column, fastKeysActive, pageCount, pageItems } from "./model.mjs";
+import {
+  LEVELS,
+  LEVEL_TITLES,
+  PAGE_SIZE,
+  column,
+  fastKeysActive,
+  matchPageCount,
+  matchPageItems,
+  pageCount,
+  pageItems,
+  pathText,
+  searching,
+} from "./model.mjs";
 import { width } from "./width.mjs";
 
 const RESET = "\x1b[0m";
@@ -21,6 +33,8 @@ const HOVER_BG = `\x1b[48;2;${SELECTION_BG}m`;
 /** Actived keeps the accent without the emphasis, so the hover stays the single focal point. */
 const ACTIVED = `\x1b[38;2;${ACCENT}m`;
 const ACCENT_BORDER = ACTIVED;
+/** Matched characters: yellow, the one colour not used for selection. */
+const MATCH = `\x1b[1;38;2;249;226;175m`;
 /** Fast keys render as a small chip, like herdr's own key hints. */
 const KEY = `\x1b[48;2;${SURFACE1}m\x1b[38;2;${TEXT}m`;
 
@@ -98,16 +112,61 @@ function joinColumns(parts) {
 }
 
 function searchBox(state, inner) {
-  const filter = state.filter[state.depth];
-  const placeholder = "Type to filter";
-  const text = filter ? `${filter}\u258f` : placeholder;
-  const styled = filter ? `${BOLD}${text}${RESET}` : `${DIM}${text}${RESET}`;
-  const border = filter ? ACCENT_BORDER : BORDER;
+  const empty = !searching(state) && !state.typing;
+  const text = state.typing ? `${state.query}\u258f` : state.query || "/  search";
+  const count = searching(state)
+    ? state.matches.length
+      ? `${state.matches.length} matches`
+      : "no matches"
+    : "";
+  const styled = empty ? `${DIM}${text}${RESET}` : `${BOLD}${text}${RESET}`;
+  const border = state.typing || searching(state) ? ACCENT_BORDER : BORDER;
+  const gap = Math.max(1, inner - 1 - width(text) - width(count) - 1);
+  const body = ` ${styled}${" ".repeat(gap)}${DIM}${count}${RESET} `;
   return [
     `${border}\u256d${"\u2500".repeat(inner)}\u256e${RESET}`,
-    `${border}\u2502${RESET} ${styled}${" ".repeat(Math.max(0, inner - 1 - width(text)))}${border}\u2502${RESET}`,
+    `${border}\u2502${RESET}${body}${border}\u2502${RESET}`,
     `${border}\u2570${"\u2500".repeat(inner)}\u256f${RESET}`,
   ].map((line) => " ".repeat(GUTTER) + line);
+}
+
+/** One result row: `space / tab / pane` with the matched run picked out. */
+function resultCell(state, match, row, inner) {
+  const absolute = state.matchPage * PAGE_SIZE + row;
+  // While the query is still being typed nothing is selected, so no row may
+  // look ready to send.
+  const selected = !state.typing && absolute === state.cursor;
+  const border = selected ? ACCENT_BORDER : BORDER;
+  const bg = selected ? HOVER_BG : "";
+  const style = selected ? HOVER : "";
+  const badge = fastKeysActive(state) ? ` ${KEY} ${row + 1} ${RESET}${bg}` : "";
+  const badgeWidth = fastKeysActive(state) ? 4 : 0;
+  const id = ` ${match.item.id} `;
+  const room = inner - 1 - badgeWidth - width(id);
+  const text = fit(pathText(match), room);
+
+  let body;
+  if (match.from < 0 || match.from >= text.length) {
+    body = `${style}${pad(text, room)}${RESET}`;
+  } else {
+    const to = Math.min(match.to, text.length);
+    body =
+      `${style}${text.slice(0, match.from)}${RESET}${bg}` +
+      `${MATCH}${text.slice(match.from, to)}${RESET}${bg}` +
+      `${style}${pad(text.slice(to), room - width(text.slice(0, to)))}${RESET}${bg}`;
+  }
+
+  const content = `${bg}${badge} ${body}${bg}${DIM}${id}${RESET}`;
+  return [
+    `${border}\u256d${"\u2500".repeat(inner)}\u256e${RESET}`,
+    `${border}\u2502${RESET}${content}${border}\u2502${RESET}`,
+    `${border}\u2570${"\u2500".repeat(inner)}\u256f${RESET}`,
+  ].map((line) => " ".repeat(GUTTER) + line);
+}
+
+function resultsHeader(state, inner) {
+  const title = `Results (${state.matches.length ? state.matchPage + 1 : 0}/${state.matches.length ? matchPageCount(state) : 0})`;
+  return " ".repeat(GUTTER) + `${BOLD}${pad(title, inner)}${RESET}`;
 }
 
 function headers(state, colWidth) {
@@ -121,25 +180,40 @@ function headers(state, colWidth) {
   );
 }
 
-const HINTS = [
-  "Type : Filter",
+const BROWSE_HINTS = [
   "\u2191/\u2193 : Select",
   "\u2190 : Back",
   "\u2192 : Choose",
   "1~9 : Fast key",
   "PgUp/PgDn : Page",
-  "Ctrl-U : Clear",
+  "/ : Search",
   "Enter : Confirm",
-  "Esc : Clear / Close",
+  "Esc : Close",
+];
+
+const TYPING_HINTS = [
+  "Type : Search everything",
+  "Enter or \u2191/\u2193 : Pick from the results",
+  "Ctrl-U : Clear",
+  "Esc : Back to columns",
+];
+
+const RESULT_HINTS = [
+  "\u2191/\u2193 : Select",
+  "1~9 : Fast key",
+  "PgUp/PgDn : Page",
+  "/ : Edit search",
+  "Enter : Confirm",
+  "Esc : Back to columns",
 ];
 
 /** Packs the key hints into as few lines as the width allows. */
-function footer(cols, preview) {
+function footer(cols, preview, hints) {
   const g = " ".repeat(GUTTER);
   const max = cols - GUTTER * 2;
   const lines = [];
   let current = "";
-  for (const hint of HINTS) {
+  for (const hint of hints) {
     const next = current ? `${current}    ${hint}` : hint;
     if (width(next) > max && current) {
       lines.push(current);
@@ -151,7 +225,7 @@ function footer(cols, preview) {
   if (current) lines.push(current);
   return [
     ...lines.map((line) => `${g}${DIM}${line}${RESET}`),
-    `${g}${DIM}Enter sends${RESET}  ${preview}`,
+    preview ? `${g}${DIM}Enter sends${RESET}  ${preview}` : `${g}`,
   ];
 }
 
@@ -163,18 +237,34 @@ function footer(cols, preview) {
 export function render(state, cols, rows, preview) {
   const inner = Math.max(30, cols - GUTTER * 2);
   const colWidth = Math.floor((inner - GAP * (LEVELS - 1)) / LEVELS);
-  const bottom = footer(cols, preview);
+  const hints = state.typing ? TYPING_HINTS : searching(state) ? RESULT_HINTS : BROWSE_HINTS;
+  const bottom = footer(cols, preview, hints);
   const boxed = rows >= BOXED_MIN_ROWS + bottom.length;
 
-  const lines = [...searchBox(state, inner - 2), "", headers(state, colWidth)];
+  const lines = [...searchBox(state, inner - 2), ""];
 
-  for (let row = 0; row < PAGE_SIZE; row++) {
-    const cells = Array.from({ length: LEVELS }, (_, level) => cellData(state, level, row));
-    if (boxed) {
-      const boxes = cells.map((cell) => boxedCell(cell, colWidth));
-      for (let r = 0; r < BOX_ROWS; r++) lines.push(joinColumns(boxes.map((b) => b[r])));
-    } else {
-      lines.push(joinColumns(cells.map((cell) => compactCell(cell, colWidth))));
+  if (searching(state)) {
+    lines.push(resultsHeader(state, inner));
+    const rowsShown = matchPageItems(state);
+    for (let row = 0; row < PAGE_SIZE; row++) {
+      const match = rowsShown[row];
+      if (!match) {
+        lines.push(...(boxed ? ["", "", ""] : [""]));
+        continue;
+      }
+      const cell = resultCell(state, match, row, inner - 2);
+      lines.push(...(boxed ? cell : [cell[1]]));
+    }
+  } else {
+    lines.push(headers(state, colWidth));
+    for (let row = 0; row < PAGE_SIZE; row++) {
+      const cells = Array.from({ length: LEVELS }, (_, level) => cellData(state, level, row));
+      if (boxed) {
+        const boxes = cells.map((cell) => boxedCell(cell, colWidth));
+        for (let r = 0; r < BOX_ROWS; r++) lines.push(joinColumns(boxes.map((b) => b[r])));
+      } else {
+        lines.push(joinColumns(cells.map((cell) => compactCell(cell, colWidth))));
+      }
     }
   }
 

@@ -1,7 +1,7 @@
 import { loadConfig, renderTemplate } from "./config.mjs";
 import { loadContext, loadTree, sendText } from "./herdr.mjs";
 import { parseKeys } from "./keys.mjs";
-import { hovered, initialState, reduce, toItems } from "./model.mjs";
+import { current, initialState, reduce, toItems } from "./model.mjs";
 import { render } from "./render.mjs";
 
 const ALT_SCREEN_ON = "\x1b[?1049h\x1b[?25l";
@@ -27,7 +27,8 @@ function outputFor(item) {
 }
 
 function draw() {
-  const item = hovered(state, state.depth);
+  // No preview while the query is being typed: nothing is selected yet.
+  const item = state.typing ? undefined : current(state);
   out.write(render(state, out.columns ?? 80, out.rows ?? 24, item ? outputFor(item) : ""));
 }
 
