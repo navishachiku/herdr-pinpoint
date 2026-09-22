@@ -26,7 +26,8 @@ find them. This popup ends both.
   one path from left to right.
 - **Fast keys** — `1`–`9` on the active column; two keystrokes reach any pane
   on the first page.
-- **Type to filter** — no search mode; start typing and the column narrows.
+- **Search the whole tree** — `/` matches the full `space / tab / pane` path
+  and highlights what it found.
 - **Confirm any level** — `Enter` on a space sends the space, on a pane sends
   the pane.
 - **Starts where you are** — the hover opens on the space, tab, and pane you
@@ -61,21 +62,32 @@ description = "pick a herdr target"
 
 ## Keys
 
+Browsing the three columns:
+
 | Key | Action |
 | --- | --- |
-| type | Filter the current column; the first match is hovered |
 | `↑` / `↓` | Move the hover in the current column |
-| `→` | Choose: activate the hovered item and move to its children |
-| `1`–`9` | Same as `→` for the numbered item; only while nothing is typed |
+| `→` or `1`–`9` | Choose: activate that item and move to its children |
 | `←` | Back to the parent column |
 | `PgUp` / `PgDn` | Switch page (9 items per page) |
-| `Ctrl-U` | Clear the query |
+| `/` | Search |
 | `Enter` | Type the hovered item into the calling pane and close |
-| `Esc` | Clear the query; when it is already empty, close |
+| `Esc` | Close |
 
-Each column keeps its own query. Number badges appear on the column that
-accepts them, which is the column right of the last activated item, and
-disappear while a query is being typed.
+Searching, which replaces the columns with one list of matches:
+
+| Key | Action |
+| --- | --- |
+| type | Match against the whole `space / tab / pane` path; the match is highlighted |
+| `↓` / `↑` | Move onto the first / last result; from the first, `↑` returns to the box |
+| `1`–`9` | Select that result once the box is left |
+| `Enter` | Leave the box keeping the results; on a result, send it |
+| `Ctrl-U` | Empty the query |
+| `Esc` | Drop the query and go back to the columns |
+
+Nothing is selected while the query is still being typed, so no row can look
+ready to send. Backspacing to an empty query stays in the search; one more
+backspace leaves it.
 
 ## What gets typed
 

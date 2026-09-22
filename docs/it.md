@@ -24,8 +24,8 @@ dell'agente per andarli a cercare. Questo popup elimina entrambi.
   sempre un unico percorso da sinistra a destra.
 - **Tasti rapidi** — `1`–`9` sulla colonna attiva; due pressioni raggiungono
   qualsiasi pane della prima pagina.
-- **Digita per filtrare** — nessuna modalità di ricerca; inizia a digitare e
-  la colonna si restringe.
+- **Cerca in tutto l'albero** — `/` confronta l'intero percorso `space / tab /
+  pane` ed evidenzia ciò che trova.
 - **Conferma a qualsiasi livello** — `Invio` su uno spazio invia lo spazio,
   su un pane invia il pane.
 - **Parte da dove sei** — il cursore si apre sullo spazio, la scheda e il pane
@@ -61,21 +61,30 @@ description = "pick a herdr target"
 
 ## Tasti
 
+Sfogliando le tre colonne:
+
 | Tasto | Azione |
 | --- | --- |
-| digitare | Filtra la colonna corrente; la prima corrispondenza va sotto il cursore |
 | `↑` / `↓` | Sposta il cursore nella colonna corrente |
-| `→` | Scegli: attiva la voce sotto il cursore e passa ai suoi figli |
-| `1`–`9` | Come `→` per la voce numerata; solo finché non è stato digitato nulla |
-| `←` | Torna alla colonna padre |
-| `PgUp` / `PgDn` | Cambia pagina (9 voci per pagina) |
-| `Ctrl-U` | Cancella la query |
-| `Invio` | Digita la voce sotto il cursore nel pane chiamante e chiude |
-| `Esc` | Cancella la query; se è già vuota, chiude |
+| `→` o `1`–`9` | Sceglie quell'elemento e passa ai suoi figli |
+| `←` | Torna alla colonna superiore |
+| `PgUp` / `PgDn` | Cambia pagina (9 per pagina) |
+| `/` | Cerca |
+| `Enter` | Digita l'elemento sotto il cursore nel pane che l'ha aperto e chiude |
+| `Esc` | Chiude |
 
-Ogni colonna conserva la propria query. I badge numerici compaiono sulla
-colonna che li accetta, cioè la colonna a destra dell'ultima voce attivata, e
-scompaiono mentre si digita una query.
+Durante la ricerca le colonne lasciano il posto a un unico elenco di risultati:
+
+| Tasto | Azione |
+| --- | --- |
+| digitare | Confronta l'intero percorso `space / tab / pane`; la parte trovata è evidenziata |
+| `↓` / `↑` | Va al primo / ultimo risultato; dal primo, `↑` torna alla casella |
+| `1`–`9` | Seleziona quel risultato una volta usciti dalla casella |
+| `Enter` | Esce dalla casella mantenendo i risultati; su un risultato lo invia |
+| `Ctrl-U` | Svuota la query |
+| `Esc` | Abbandona la query e torna alle colonne |
+
+Mentre si digita non c'è nulla di selezionato, quindi nessuna riga sembra pronta da inviare. Cancellare fino a svuotarla resta nella ricerca; un'altra cancellazione ne esce.
 
 ## Cosa viene digitato
 

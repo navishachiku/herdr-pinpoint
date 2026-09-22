@@ -24,8 +24,8 @@ agente para ir a buscarlos. Este popup acaba con ambos.
   pestañas, siempre un único camino de izquierda a derecha.
 - **Teclas rápidas** — `1`–`9` en la columna activa; dos pulsaciones alcanzan
   cualquier pane de la primera página.
-- **Escribe para filtrar** — sin modo de búsqueda; empieza a escribir y la
-  columna se reduce.
+- **Busca en todo el árbol** — `/` compara con toda la ruta `space / tab /
+  pane` y resalta lo encontrado.
 - **Confirma en cualquier nivel** — `Enter` sobre un espacio envía el espacio,
   sobre un pane envía el pane.
 - **Empieza donde estás** — el cursor se abre en el espacio, la pestaña y el
@@ -61,21 +61,30 @@ description = "pick a herdr target"
 
 ## Teclas
 
+Recorriendo las tres columnas:
+
 | Tecla | Acción |
 | --- | --- |
-| escribir | Filtra la columna actual; la primera coincidencia queda bajo el cursor |
-| `↑` / `↓` | Mueve el cursor en la columna actual |
-| `→` | Elegir: activa el elemento bajo el cursor y pasa a sus hijos |
-| `1`–`9` | Igual que `→` para el elemento numerado; solo mientras no hay nada escrito |
-| `←` | Vuelve a la columna padre |
-| `PgUp` / `PgDn` | Cambia de página (9 elementos por página) |
-| `Ctrl-U` | Borra la consulta |
-| `Enter` | Escribe el elemento bajo el cursor en el pane que llamó y cierra |
-| `Esc` | Borra la consulta; si ya está vacía, cierra |
+| `↑` / `↓` | Mueve el cursor dentro de la columna actual |
+| `→` o `1`–`9` | Elige ese elemento y pasa a sus hijos |
+| `←` | Vuelve a la columna anterior |
+| `PgUp` / `PgDn` | Cambia de página (9 por página) |
+| `/` | Buscar |
+| `Enter` | Escribe el elemento bajo el cursor en el pane que la abrió y cierra |
+| `Esc` | Cierra |
 
-Cada columna conserva su propia consulta. Las insignias numéricas aparecen en
-la columna que las acepta, que es la columna a la derecha del último elemento
-activado, y desaparecen mientras se escribe una consulta.
+Al buscar, las columnas se sustituyen por una única lista de coincidencias:
+
+| Tecla | Acción |
+| --- | --- |
+| escribir | Compara con toda la ruta `space / tab / pane`; la coincidencia se resalta |
+| `↓` / `↑` | Va al primer / último resultado; desde el primero, `↑` vuelve al cuadro |
+| `1`–`9` | Selecciona ese resultado una vez fuera del cuadro |
+| `Enter` | Sale del cuadro conservando los resultados; sobre un resultado, lo envía |
+| `Ctrl-U` | Vacía la consulta |
+| `Esc` | Descarta la consulta y vuelve a las columnas |
+
+Mientras se escribe no hay nada seleccionado, así que ninguna fila parece lista para enviarse. Borrar hasta dejarla vacía mantiene la búsqueda; otro borrado sale de ella.
 
 ## Qué se escribe
 

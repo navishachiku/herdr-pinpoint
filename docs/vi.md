@@ -23,7 +23,8 @@ agent để đi tìm nó. Popup này chấm dứt cả hai.
   là một đường đi từ trái sang phải.
 - **Phím nhanh** — `1`–`9` trên cột đang hoạt động; hai lần nhấn là tới bất kỳ
   pane nào ở trang đầu.
-- **Gõ để lọc** — không có chế độ tìm kiếm; bắt đầu gõ là cột thu hẹp lại.
+- **Tìm trong toàn bộ cây** — `/` so khớp toàn bộ đường dẫn `space / tab /
+  pane` và tô sáng phần tìm thấy.
 - **Xác nhận ở bất kỳ cấp nào** — `Enter` trên không gian gửi không gian, trên
   pane gửi pane.
 - **Bắt đầu từ chỗ bạn đang đứng** — con trỏ mở tại không gian, tab và pane mà
@@ -58,20 +59,30 @@ description = "pick a herdr target"
 
 ## Phím
 
+Khi duyệt ba cột:
+
 | Phím | Hành động |
 | --- | --- |
-| gõ chữ | Lọc cột hiện tại; kết quả khớp đầu tiên được đặt con trỏ |
 | `↑` / `↓` | Di chuyển con trỏ trong cột hiện tại |
-| `→` | Chọn: kích hoạt mục dưới con trỏ và chuyển sang các mục con |
-| `1`–`9` | Giống `→` cho mục được đánh số; chỉ khi chưa gõ gì |
+| `→` hoặc `1`–`9` | Chọn mục đó và sang các mục con của nó |
 | `←` | Quay lại cột cha |
 | `PgUp` / `PgDn` | Chuyển trang (9 mục mỗi trang) |
-| `Ctrl-U` | Xóa truy vấn |
-| `Enter` | Gõ mục dưới con trỏ vào pane đã gọi và đóng |
-| `Esc` | Xóa truy vấn; nếu đã trống thì đóng |
+| `/` | Tìm kiếm |
+| `Enter` | Gõ mục đang trỏ vào pane đã mở nó rồi đóng |
+| `Esc` | Đóng |
 
-Mỗi cột giữ truy vấn riêng. Nhãn số xuất hiện trên cột nhận chúng, tức cột
-bên phải mục được kích hoạt gần nhất, và biến mất trong lúc đang gõ truy vấn.
+Khi tìm kiếm, ba cột nhường chỗ cho một danh sách kết quả:
+
+| Phím | Hành động |
+| --- | --- |
+| gõ chữ | So khớp toàn bộ đường dẫn `space / tab / pane`; phần khớp được tô sáng |
+| `↓` / `↑` | Tới kết quả đầu / cuối; ở kết quả đầu, `↑` quay lại ô nhập |
+| `1`–`9` | Chọn kết quả đó sau khi đã rời ô nhập |
+| `Enter` | Rời ô nhập và giữ kết quả; đang ở một kết quả thì gửi nó |
+| `Ctrl-U` | Xóa trống truy vấn |
+| `Esc` | Bỏ truy vấn và trở về ba cột |
+
+Trong lúc đang gõ không có gì được chọn, nên không dòng nào trông như sẵn sàng gửi. Xóa đến rỗng vẫn ở trong tìm kiếm; xóa thêm một lần nữa mới thoát.
 
 ## Nội dung được gõ
 

@@ -24,8 +24,8 @@ l'agent pour aller les trouver. Ce popup met fin aux deux.
   toujours un seul chemin de gauche à droite.
 - **Touches rapides** — `1`–`9` sur la colonne active ; deux frappes
   atteignent n'importe quel pane de la première page.
-- **Tapez pour filtrer** — pas de mode recherche ; commencez à taper et la
-  colonne se réduit.
+- **Recherche dans tout l'arbre** — `/` compare avec le chemin complet
+  `space / tab / pane` et surligne ce qu'il trouve.
 - **Validez à tout niveau** — `Entrée` sur un espace envoie l'espace, sur un
   pane envoie le pane.
 - **Démarre où vous êtes** — le survol s'ouvre sur l'espace, l'onglet et le
@@ -61,21 +61,30 @@ description = "pick a herdr target"
 
 ## Touches
 
+Pour parcourir les trois colonnes :
+
 | Touche | Action |
 | --- | --- |
-| saisie | Filtre la colonne courante ; la première correspondance est survolée |
-| `↑` / `↓` | Déplace le survol dans la colonne courante |
-| `→` | Choisir : active l'élément survolé et passe à ses enfants |
-| `1`–`9` | Comme `→` pour l'élément numéroté ; seulement tant que rien n'est saisi |
-| `←` | Retour à la colonne parente |
-| `PgUp` / `PgDn` | Change de page (9 éléments par page) |
-| `Ctrl-U` | Efface la requête |
-| `Entrée` | Saisit l'élément survolé dans le pane appelant et ferme |
-| `Échap` | Efface la requête ; si elle est déjà vide, ferme |
+| `↑` / `↓` | Déplace le curseur dans la colonne courante |
+| `→` ou `1`–`9` | Choisit cet élément et passe à ses enfants |
+| `←` | Revient à la colonne parente |
+| `PgUp` / `PgDn` | Change de page (9 par page) |
+| `/` | Rechercher |
+| `Enter` | Saisit l'élément sous le curseur dans le pane appelant et ferme |
+| `Esc` | Ferme |
 
-Chaque colonne garde sa propre requête. Les badges numériques apparaissent sur
-la colonne qui les accepte, c'est-à-dire la colonne à droite du dernier
-élément activé, et disparaissent pendant la saisie d'une requête.
+Pendant la recherche, les colonnes laissent place à une seule liste de résultats :
+
+| Touche | Action |
+| --- | --- |
+| saisie | Compare avec tout le chemin `space / tab / pane` ; la correspondance est surlignée |
+| `↓` / `↑` | Va au premier / dernier résultat ; depuis le premier, `↑` revient au champ |
+| `1`–`9` | Sélectionne ce résultat une fois le champ quitté |
+| `Enter` | Quitte le champ en gardant les résultats ; sur un résultat, l'envoie |
+| `Ctrl-U` | Vide la requête |
+| `Esc` | Abandonne la requête et revient aux colonnes |
+
+Rien n'est sélectionné tant que le texte est en cours de saisie, donc aucune ligne ne semble prête à être envoyée. Effacer jusqu'au vide reste dans la recherche ; un effacement de plus en sort.
 
 ## Ce qui est saisi
 

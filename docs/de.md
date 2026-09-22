@@ -25,8 +25,8 @@ Agenten, um sie zu finden. Dieses Popup beendet beides.
   immer ein Pfad von links nach rechts.
 - **Schnelltasten** – `1`–`9` in der aktiven Spalte; zwei Tastendrücke
   erreichen jedes Pane der ersten Seite.
-- **Tippen zum Filtern** – kein Suchmodus; fang an zu tippen und die Spalte
-  wird enger.
+- **Den ganzen Baum durchsuchen** – `/` vergleicht mit dem vollen Pfad
+  `space / tab / pane` und hebt den Treffer hervor.
 - **Auf jeder Ebene bestätigen** – `Enter` auf einem Space sendet den Space,
   auf einem Pane das Pane.
 - **Startet, wo du bist** – der Cursor öffnet sich auf Space, Tab und Pane,
@@ -62,21 +62,30 @@ description = "pick a herdr target"
 
 ## Tasten
 
+Beim Durchgehen der drei Spalten:
+
 | Taste | Aktion |
 | --- | --- |
-| tippen | Filtert die aktuelle Spalte; der erste Treffer liegt unter dem Cursor |
 | `↑` / `↓` | Bewegt den Cursor in der aktuellen Spalte |
-| `→` | Wählen: aktiviert den Eintrag unter dem Cursor und wechselt zu seinen Kindern |
-| `1`–`9` | Wie `→` für den nummerierten Eintrag; nur solange nichts getippt ist |
+| `→` oder `1`–`9` | Wählt den Eintrag und geht zu seinen Kindern |
 | `←` | Zurück zur übergeordneten Spalte |
-| `PgUp` / `PgDn` | Seite wechseln (9 Einträge pro Seite) |
-| `Ctrl-U` | Abfrage löschen |
-| `Enter` | Tippt den Eintrag unter dem Cursor in das aufrufende Pane und schließt |
-| `Esc` | Abfrage löschen; ist sie bereits leer, schließen |
+| `PgUp` / `PgDn` | Seite wechseln (9 pro Seite) |
+| `/` | Suchen |
+| `Enter` | Schreibt den Eintrag unter dem Cursor in das aufrufende Pane und schließt |
+| `Esc` | Schließt |
 
-Jede Spalte behält ihre eigene Abfrage. Nummern-Badges erscheinen in der
-Spalte, die sie annimmt – der Spalte rechts vom zuletzt aktivierten Eintrag –
-und verschwinden, während eine Abfrage getippt wird.
+Beim Suchen treten die Spalten hinter eine einzige Trefferliste zurück:
+
+| Taste | Aktion |
+| --- | --- |
+| tippen | Vergleicht mit dem ganzen Pfad `space / tab / pane`; der Treffer wird hervorgehoben |
+| `↓` / `↑` | Springt zum ersten / letzten Treffer; beim ersten führt `↑` zurück ins Feld |
+| `1`–`9` | Wählt diesen Treffer, sobald das Feld verlassen ist |
+| `Enter` | Verlässt das Feld und behält die Treffer; auf einem Treffer sendet es ihn |
+| `Ctrl-U` | Leert die Anfrage |
+| `Esc` | Verwirft die Anfrage und kehrt zu den Spalten zurück |
+
+Während getippt wird, ist nichts ausgewählt, also sieht keine Zeile sendebereit aus. Bis zur Leere zu löschen bleibt in der Suche; ein weiteres Löschen verlässt sie.
 
 ## Was eingegeben wird
 

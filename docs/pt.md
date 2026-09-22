@@ -24,8 +24,8 @@ para ir encontrá-los. Este popup acaba com os dois.
   um único caminho da esquerda para a direita.
 - **Teclas rápidas** — `1`–`9` na coluna ativa; duas teclas alcançam qualquer
   pane da primeira página.
-- **Digite para filtrar** — sem modo de busca; comece a digitar e a coluna se
-  estreita.
+- **Busca na árvore inteira** — `/` compara com todo o caminho `space / tab /
+  pane` e destaca o que encontrou.
 - **Confirme em qualquer nível** — `Enter` num espaço envia o espaço, num pane
   envia o pane.
 - **Começa onde você está** — o cursor abre no espaço, aba e pane de onde você
@@ -60,21 +60,30 @@ description = "pick a herdr target"
 
 ## Teclas
 
+Percorrendo as três colunas:
+
 | Tecla | Ação |
 | --- | --- |
-| digitar | Filtra a coluna atual; a primeira correspondência fica sob o cursor |
-| `↑` / `↓` | Move o cursor na coluna atual |
-| `→` | Escolher: ativa o item sob o cursor e passa aos filhos dele |
-| `1`–`9` | Igual a `→` para o item numerado; só enquanto nada foi digitado |
-| `←` | Volta à coluna pai |
-| `PgUp` / `PgDn` | Troca de página (9 itens por página) |
-| `Ctrl-U` | Limpa a consulta |
-| `Enter` | Digita o item sob o cursor no pane que chamou e fecha |
-| `Esc` | Limpa a consulta; se já estiver vazia, fecha |
+| `↑` / `↓` | Move o cursor dentro da coluna atual |
+| `→` ou `1`–`9` | Escolhe o item e avança para os filhos dele |
+| `←` | Volta para a coluna anterior |
+| `PgUp` / `PgDn` | Troca de página (9 por página) |
+| `/` | Buscar |
+| `Enter` | Digita o item sob o cursor no pane que a abriu e fecha |
+| `Esc` | Fecha |
 
-Cada coluna mantém a própria consulta. Os selos numéricos aparecem na coluna
-que os aceita, que é a coluna à direita do último item ativado, e somem
-enquanto uma consulta é digitada.
+Na busca, as colunas dão lugar a uma única lista de resultados:
+
+| Tecla | Ação |
+| --- | --- |
+| digitar | Compara com todo o caminho `space / tab / pane`; o trecho encontrado é destacado |
+| `↓` / `↑` | Vai para o primeiro / último resultado; no primeiro, `↑` volta para a caixa |
+| `1`–`9` | Seleciona aquele resultado depois de sair da caixa |
+| `Enter` | Sai da caixa mantendo os resultados; sobre um resultado, envia |
+| `Ctrl-U` | Esvazia a consulta |
+| `Esc` | Descarta a consulta e volta às colunas |
+
+Enquanto se digita nada fica selecionado, então nenhuma linha parece pronta para enviar. Apagar até esvaziar mantém a busca; mais um apagar sai dela.
 
 ## O que é digitado
 
