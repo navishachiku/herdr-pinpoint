@@ -525,10 +525,12 @@ describe("keys, config and width", () => {
     );
   });
 
-  test("width counts CJK as two cells and combining marks as zero", () => {
+  test("width counts wide scripts and emoji as two cells, marks as zero", () => {
     assert.equal(width("abc"), 3);
-    assert.equal(width("閣樓冷氣"), 8);
-    assert.equal(width("é"), 1);
-    assert.equal(width("w6:pQ ▏"), 7);
+    assert.equal(width("\u30c6\u30b9\u30c8"), 6, "kana");
+    assert.equal(width("\ud55c\uae00"), 4, "hangul");
+    assert.equal(width("\ud83d\ude80"), 2, "emoji");
+    assert.equal(width("e\u0301"), 1, "a combining mark adds nothing");
+    assert.equal(width("w1:p1 \u258f"), 7);
   });
 });
