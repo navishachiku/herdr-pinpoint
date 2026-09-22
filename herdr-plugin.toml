@@ -1,5 +1,5 @@
-id = "herdr-target-picker"
-name = "Target Picker"
+id = "herdr-pinpoint"
+name = "Pinpoint"
 version = "0.2.0"
 min_herdr_version = "0.9.0"
 description = "Pick a space, tab, or pane and type its herdr id into the agent you called from"
@@ -9,13 +9,13 @@ platforms = ["macos", "linux", "windows"]
 # launches the popup pane below.
 [[actions]]
 id = "open"
-title = "Open target picker"
+title = "Open Pinpoint"
 contexts = ["pane"]
 command = ["node", "src/open.mjs"]
 
 [[panes]]
 id = "pick"
-title = "Target Picker"
+title = "Pinpoint"
 placement = "popup"
 width = "80%"
 height = "80%"

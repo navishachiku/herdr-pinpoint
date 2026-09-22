@@ -1,4 +1,4 @@
-# herdr-target-picker
+# herdr-pinpoint
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
@@ -44,7 +44,7 @@ puntero.
 Requiere Node 18 o más reciente.
 
 ```sh
-herdr plugin install navishachiku/herdr-target-picker
+herdr plugin install navishachiku/herdr-pinpoint
 ```
 
 Asigna una tecla en `~/.config/herdr/config.toml` y recarga con
@@ -54,7 +54,7 @@ Asigna una tecla en `~/.config/herdr/config.toml` y recarga con
 [[keys.command]]
 key = "prefix+shift+p"
 type = "plugin_action"
-command = "herdr-target-picker.open"
+command = "herdr-pinpoint.open"
 description = "pick a herdr target"
 ```
 
@@ -104,7 +104,7 @@ de Herdr. Sin ese skill, la cadena es solo texto.
 ## Configuración
 
 La primera ejecución escribe `config.toml` en el directorio de configuración
-del plugin (`herdr plugin config-dir herdr-target-picker`):
+del plugin (`herdr plugin config-dir herdr-pinpoint`):
 
 ```toml
 output_template = "herdr:{name}({id})"
@@ -119,8 +119,8 @@ output_template = "herdr:{name}({id})"
 ## Desarrollo
 
 ```sh
-git clone https://github.com/navishachiku/herdr-target-picker
-herdr plugin link ./herdr-target-picker
+git clone https://github.com/navishachiku/herdr-pinpoint
+herdr plugin link ./herdr-pinpoint
 npm test
 ```
 

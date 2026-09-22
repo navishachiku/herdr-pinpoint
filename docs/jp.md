@@ -1,4 +1,4 @@
-# herdr-target-picker
+# herdr-pinpoint
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
@@ -31,7 +31,7 @@ Herdr の pane をまたいだやり取りは最高。でも「ターゲット�
 Node 18 以降が必要です。
 
 ```sh
-herdr plugin install navishachiku/herdr-target-picker
+herdr plugin install navishachiku/herdr-pinpoint
 ```
 
 `~/.config/herdr/config.toml` にキーを割り当て、`prefix+shift+r` で再読み込みします。
@@ -40,7 +40,7 @@ herdr plugin install navishachiku/herdr-target-picker
 [[keys.command]]
 key = "prefix+shift+p"
 type = "plugin_action"
-command = "herdr-target-picker.open"
+command = "herdr-pinpoint.open"
 description = "pick a herdr target"
 ```
 
@@ -82,7 +82,7 @@ herdr:dev-server(w2:p2)
 
 ## 設定
 
-初回実行時にプラグイン設定ディレクトリ（`herdr plugin config-dir herdr-target-picker`）へ `config.toml` が書き出されます。
+初回実行時にプラグイン設定ディレクトリ（`herdr plugin config-dir herdr-pinpoint`）へ `config.toml` が書き出されます。
 
 ```toml
 output_template = "herdr:{name}({id})"
@@ -97,8 +97,8 @@ output_template = "herdr:{name}({id})"
 ## 開発
 
 ```sh
-git clone https://github.com/navishachiku/herdr-target-picker
-herdr plugin link ./herdr-target-picker
+git clone https://github.com/navishachiku/herdr-pinpoint
+herdr plugin link ./herdr-pinpoint
 npm test
 ```
 

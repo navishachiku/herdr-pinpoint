@@ -8,7 +8,7 @@ const ALT_SCREEN_ON = "\x1b[?1049h\x1b[?25l";
 const ALT_SCREEN_OFF = "\x1b[?25h\x1b[?1049l";
 
 function fail(message) {
-  process.stderr.write(`herdr-target-picker: ${message}\n`);
+  process.stderr.write(`herdr-pinpoint: ${message}\n`);
   process.exit(1);
 }
 

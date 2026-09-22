@@ -1,4 +1,4 @@
-# herdr-target-picker
+# herdr-pinpoint
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
@@ -31,7 +31,7 @@ Herdr에서 pane 넘나들며 대화하는 건 진짜 좋은데, 대상 설명�
 Node 18 이상이 필요합니다.
 
 ```sh
-herdr plugin install navishachiku/herdr-target-picker
+herdr plugin install navishachiku/herdr-pinpoint
 ```
 
 `~/.config/herdr/config.toml`에 키를 바인딩하고 `prefix+shift+r`로 다시 불러옵니다.
@@ -40,7 +40,7 @@ herdr plugin install navishachiku/herdr-target-picker
 [[keys.command]]
 key = "prefix+shift+p"
 type = "plugin_action"
-command = "herdr-target-picker.open"
+command = "herdr-pinpoint.open"
 description = "pick a herdr target"
 ```
 
@@ -82,7 +82,7 @@ herdr:dev-server(w2:p2)
 
 ## 설정
 
-첫 실행 시 플러그인 설정 디렉터리(`herdr plugin config-dir herdr-target-picker`)에 `config.toml`이 생성됩니다.
+첫 실행 시 플러그인 설정 디렉터리(`herdr plugin config-dir herdr-pinpoint`)에 `config.toml`이 생성됩니다.
 
 ```toml
 output_template = "herdr:{name}({id})"
@@ -97,8 +97,8 @@ output_template = "herdr:{name}({id})"
 ## 개발
 
 ```sh
-git clone https://github.com/navishachiku/herdr-target-picker
-herdr plugin link ./herdr-target-picker
+git clone https://github.com/navishachiku/herdr-pinpoint
+herdr plugin link ./herdr-pinpoint
 npm test
 ```
 

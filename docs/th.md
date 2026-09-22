@@ -1,4 +1,4 @@
-# herdr-target-picker
+# herdr-pinpoint
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
@@ -37,7 +37,7 @@ prompt และ agent จะทำงานกับ pane นั้นเท่
 ต้องมี Node 18 ขึ้นไป
 
 ```sh
-herdr plugin install navishachiku/herdr-target-picker
+herdr plugin install navishachiku/herdr-pinpoint
 ```
 
 ผูกปุ่มใน `~/.config/herdr/config.toml` แล้วโหลดใหม่ด้วย `prefix+shift+r`:
@@ -46,7 +46,7 @@ herdr plugin install navishachiku/herdr-target-picker
 [[keys.command]]
 key = "prefix+shift+p"
 type = "plugin_action"
-command = "herdr-target-picker.open"
+command = "herdr-pinpoint.open"
 description = "pick a herdr target"
 ```
 
@@ -92,7 +92,7 @@ herdr:dev-server(w2:p2)
 ## การตั้งค่า
 
 การรันครั้งแรกจะเขียน `config.toml` ลงในไดเรกทอรีการตั้งค่าของปลั๊กอิน
-(`herdr plugin config-dir herdr-target-picker`):
+(`herdr plugin config-dir herdr-pinpoint`):
 
 ```toml
 output_template = "herdr:{name}({id})"
@@ -107,8 +107,8 @@ output_template = "herdr:{name}({id})"
 ## การพัฒนา
 
 ```sh
-git clone https://github.com/navishachiku/herdr-target-picker
-herdr plugin link ./herdr-target-picker
+git clone https://github.com/navishachiku/herdr-pinpoint
+herdr plugin link ./herdr-pinpoint
 npm test
 ```
 

@@ -1,4 +1,4 @@
-# herdr-target-picker
+# herdr-pinpoint
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
@@ -44,7 +44,7 @@ pane. Он никогда не отправляет промпт. Действо
 Требуется Node 18 или новее.
 
 ```sh
-herdr plugin install navishachiku/herdr-target-picker
+herdr plugin install navishachiku/herdr-pinpoint
 ```
 
 Назначьте клавишу в `~/.config/herdr/config.toml` и перезагрузите через
@@ -54,7 +54,7 @@ herdr plugin install navishachiku/herdr-target-picker
 [[keys.command]]
 key = "prefix+shift+p"
 type = "plugin_action"
-command = "herdr-target-picker.open"
+command = "herdr-pinpoint.open"
 description = "pick a herdr target"
 ```
 
@@ -102,7 +102,7 @@ skill Herdr. Без этого skill строка — просто текст.
 ## Настройка
 
 Первый запуск записывает `config.toml` в каталог конфигурации плагина
-(`herdr plugin config-dir herdr-target-picker`):
+(`herdr plugin config-dir herdr-pinpoint`):
 
 ```toml
 output_template = "herdr:{name}({id})"
@@ -117,8 +117,8 @@ output_template = "herdr:{name}({id})"
 ## Разработка
 
 ```sh
-git clone https://github.com/navishachiku/herdr-target-picker
-herdr plugin link ./herdr-target-picker
+git clone https://github.com/navishachiku/herdr-pinpoint
+herdr plugin link ./herdr-pinpoint
 npm test
 ```
 

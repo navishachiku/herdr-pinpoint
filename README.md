@@ -1,4 +1,4 @@
-# herdr-target-picker
+# herdr-pinpoint
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
@@ -21,7 +21,7 @@ prompt, and the agent acts on exactly that one.
 > Three keystrokes, three seconds. Open, arrow, Enter, and the exact pane is in
 > your prompt, before you could have finished typing its description.
 
-![The picker opens over an agent pane, a fast key and a typed filter narrow it to dev-server, and Enter types herdr:dev-server(w2:p2) into the prompt](docs/media/demo.gif)
+![Pinpoint opens over an agent pane, a fast key and a typed filter narrow it to dev-server, and Enter types herdr:dev-server(w2:p2) into the prompt](docs/media/demo.gif)
 
 - **Three linked columns** — spaces, their tabs, and the tabs' panes, always
   one path from left to right.
@@ -35,7 +35,7 @@ prompt, and the agent acts on exactly that one.
 - **Your format** — `herdr:{name}({id})` by default; change the template in
   one line of config.
 
-The picker only reads the session through the Herdr CLI and types one string
+Pinpoint only reads the session through the Herdr CLI and types one string
 into the calling pane. It never submits the prompt. Acting on the id is the
 job of Herdr's official agent skill (`herdr --skill`); this plugin only
 generates the pointer.
@@ -45,7 +45,7 @@ generates the pointer.
 Requires Node 18 or newer.
 
 ```sh
-herdr plugin install navishachiku/herdr-target-picker
+herdr plugin install navishachiku/herdr-pinpoint
 ```
 
 Bind a key in `~/.config/herdr/config.toml` and reload with `prefix+shift+r`:
@@ -54,7 +54,7 @@ Bind a key in `~/.config/herdr/config.toml` and reload with `prefix+shift+r`:
 [[keys.command]]
 key = "prefix+shift+p"
 type = "plugin_action"
-command = "herdr-target-picker.open"
+command = "herdr-pinpoint.open"
 description = "pick a herdr target"
 ```
 
@@ -102,7 +102,7 @@ on. Without that skill the string is just text.
 ## Configuration
 
 The first run writes `config.toml` to the plugin config directory
-(`herdr plugin config-dir herdr-target-picker`):
+(`herdr plugin config-dir herdr-pinpoint`):
 
 ```toml
 output_template = "herdr:{name}({id})"
@@ -117,8 +117,8 @@ output_template = "herdr:{name}({id})"
 ## Development
 
 ```sh
-git clone https://github.com/navishachiku/herdr-target-picker
-herdr plugin link ./herdr-target-picker
+git clone https://github.com/navishachiku/herdr-pinpoint
+herdr plugin link ./herdr-pinpoint
 npm test
 ```
 

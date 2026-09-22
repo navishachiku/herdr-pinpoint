@@ -8,7 +8,7 @@ export const DEFAULT_CONFIG = {
   outputTemplate: "herdr:{name}({id})",
 };
 
-const TEMPLATE = `# herdr-target-picker
+const TEMPLATE = `# herdr-pinpoint
 #
 # Text typed into the pane you opened the picker from.
 # Tokens:

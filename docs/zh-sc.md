@@ -1,4 +1,4 @@
-# herdr-target-picker
+# herdr-pinpoint
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
@@ -31,7 +31,7 @@ Herdr 跨窗口聊天很牛，但你是不是也觉得描述目标挺费劲的�
 需要 Node 18 或更新版本。
 
 ```sh
-herdr plugin install navishachiku/herdr-target-picker
+herdr plugin install navishachiku/herdr-pinpoint
 ```
 
 在 `~/.config/herdr/config.toml` 绑一个按键，然后用 `prefix+shift+r` 重新加载：
@@ -40,7 +40,7 @@ herdr plugin install navishachiku/herdr-target-picker
 [[keys.command]]
 key = "prefix+shift+p"
 type = "plugin_action"
-command = "herdr-target-picker.open"
+command = "herdr-pinpoint.open"
 description = "pick a herdr target"
 ```
 
@@ -82,7 +82,7 @@ herdr:dev-server(w2:p2)
 
 ## 配置
 
-首次运行会把 `config.toml` 写到插件配置目录（`herdr plugin config-dir herdr-target-picker`）：
+首次运行会把 `config.toml` 写到插件配置目录（`herdr plugin config-dir herdr-pinpoint`）：
 
 ```toml
 output_template = "herdr:{name}({id})"
@@ -97,8 +97,8 @@ output_template = "herdr:{name}({id})"
 ## 开发
 
 ```sh
-git clone https://github.com/navishachiku/herdr-target-picker
-herdr plugin link ./herdr-target-picker
+git clone https://github.com/navishachiku/herdr-pinpoint
+herdr plugin link ./herdr-pinpoint
 npm test
 ```
 

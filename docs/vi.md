@@ -1,4 +1,4 @@
-# herdr-target-picker
+# herdr-pinpoint
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](../LICENSE)
 ![Herdr 0.9+](https://img.shields.io/badge/herdr-0.9%2B-8a2be2)
@@ -42,7 +42,7 @@ của Herdr (`herdr --skill`); plugin này chỉ tạo ra con trỏ.
 Cần Node 18 trở lên.
 
 ```sh
-herdr plugin install navishachiku/herdr-target-picker
+herdr plugin install navishachiku/herdr-pinpoint
 ```
 
 Gán một phím trong `~/.config/herdr/config.toml` và tải lại bằng
@@ -52,7 +52,7 @@ Gán một phím trong `~/.config/herdr/config.toml` và tải lại bằng
 [[keys.command]]
 key = "prefix+shift+p"
 type = "plugin_action"
-command = "herdr-target-picker.open"
+command = "herdr-pinpoint.open"
 description = "pick a herdr target"
 ```
 
@@ -99,7 +99,7 @@ skill đó, chuỗi này chỉ là văn bản.
 ## Cấu hình
 
 Lần chạy đầu ghi `config.toml` vào thư mục cấu hình của plugin
-(`herdr plugin config-dir herdr-target-picker`):
+(`herdr plugin config-dir herdr-pinpoint`):
 
 ```toml
 output_template = "herdr:{name}({id})"
@@ -114,8 +114,8 @@ output_template = "herdr:{name}({id})"
 ## Phát triển
 
 ```sh
-git clone https://github.com/navishachiku/herdr-target-picker
-herdr plugin link ./herdr-target-picker
+git clone https://github.com/navishachiku/herdr-pinpoint
+herdr plugin link ./herdr-pinpoint
 npm test
 ```
 
