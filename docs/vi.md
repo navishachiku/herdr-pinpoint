@@ -13,11 +13,9 @@ Chat xuyên pane trong Herdr thì quá đã, nhưng bạn có thấy mô tả m�
 thời gian kinh khủng không? Nhất là khi nó nằm ở Space khác.
 
 Mục tiêu mơ hồ tốn kém hai lần: token của bạn để mô tả nó, và token của
-agent để đi tìm nó. Popup này chấm dứt cả hai. Chọn pane, id Herdr của nó
-rơi vào prompt, và agent thao tác chính xác trên pane đó.
+agent để đi tìm nó. Popup này chấm dứt cả hai.
 
-> Ba phím, ba giây. Mở, mũi tên, Enter, và đúng pane đã nằm trong prompt của
-> bạn, trước khi bạn kịp gõ xong phần mô tả.
+> Chỉ cần ba giây để gọi tên mục tiêu, nhanh hơn gõ mô tả về nó.
 
 ![Bộ chọn mở trên một pane agent, phím nhanh và bộ lọc gõ vào thu hẹp về dev-server, rồi Enter gõ herdr:dev-server(w2:p2) vào prompt](./media/demo.gif)
 

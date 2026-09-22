@@ -14,11 +14,10 @@ Beschreiben des Ziels ewig dauert? Vor allem, wenn es in einem anderen Space
 liegt.
 
 Vage Ziele kosten doppelt: deine Tokens, um sie zu beschreiben, und die des
-Agenten, um sie zu finden. Dieses Popup beendet beides. Wähle das Pane, seine
-Herdr-ID landet im Prompt, und der Agent handelt genau an diesem einen.
+Agenten, um sie zu finden. Dieses Popup beendet beides.
 
-> Drei Tasten, drei Sekunden. Öffnen, Pfeil, Enter – und das exakte Pane steht
-> in deinem Prompt, bevor du seine Beschreibung fertig getippt hättest.
+> Drei Sekunden genügen, um das Ziel zu benennen — schneller, als du seine
+> Beschreibung tippen könntest.
 
 ![Der Picker öffnet sich über einem Agenten-Pane, eine Schnelltaste und ein getippter Filter grenzen ihn auf dev-server ein, und Enter tippt herdr:dev-server(w2:p2) in den Prompt](./media/demo.gif)
 

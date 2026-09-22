@@ -11,9 +11,9 @@
 
 Herdr 跨窗口聊天很牛，但你是不是也觉得描述目标挺费劲的？尤其是目标在另一个 Space 里的时候。
 
-模糊的目标有两次成本：你描述它花 token，agent 去找它又花 token。这个弹窗把两笔都省掉。选定 pane，它的 Herdr id 就落进 prompt，agent 只对那一个动手。
+模糊的目标有两次成本：你描述它花 token，agent 去找它又花 token。这个弹窗把两笔都省掉。
 
-> 三个按键，三秒钟。打开、方向键、Enter，正确的 pane 已经在 prompt 里，比你打完它的描述还快。
+> 只需三秒指名对话目标，比你打完它的描述还快。
 
 ![选择器在 agent pane 上打开，快捷键加输入筛选缩到 dev-server，Enter 把 herdr:dev-server(w2:p2) 打进 prompt](./media/demo.gif)
 

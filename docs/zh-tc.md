@@ -11,9 +11,9 @@
 
 Herdr 的跨窗交談很讚，但你是否也覺得描述目標很花時間，尤其是跨 Space 的目標？
 
-模糊的目標有兩次成本：你描述它花 token，agent 去找它又花 token。這個彈出視窗把兩筆都省掉。選定 pane，它的 Herdr id 就落進 prompt，agent 只對那一個動手。
+模糊的目標有兩次成本：你描述它花 token，agent 去找它又花 token。這個彈出視窗把兩筆都省掉。
 
-> 三個按鍵，三秒鐘。開啟、方向鍵、Enter，正確的 pane 已經在 prompt 裡，比你打完它的描述還快。
+> 只需三秒指名對話目標，比你打完它的描述還快。
 
 ![選擇器在 agent pane 上開啟，快捷鍵加輸入篩選縮到 dev-server，Enter 把 herdr:dev-server(w2:p2) 打進 prompt](./media/demo.gif)
 

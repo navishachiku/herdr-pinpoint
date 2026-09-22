@@ -13,12 +13,10 @@ Chattare tra pane in Herdr è una figata, ma ti è mai capitato che descrivere
 il bersaglio ti porti via un'eternità? Soprattutto se sta in un altro Space.
 
 I bersagli vaghi costano due volte: i tuoi token per descriverli, quelli
-dell'agente per andarli a cercare. Questo popup elimina entrambi. Scegli il
-pane, il suo id Herdr finisce nel prompt e l'agente agisce esattamente su
-quello.
+dell'agente per andarli a cercare. Questo popup elimina entrambi.
 
-> Tre tasti, tre secondi. Apri, freccia, Invio, e il pane esatto è nel tuo
-> prompt prima che tu avessi finito di digitarne la descrizione.
+> Bastano tre secondi per nominare il bersaglio, più veloce che digitarne la
+> descrizione.
 
 ![Il selettore si apre sopra un pane agente, un tasto rapido e un filtro digitato lo restringono a dev-server, e Invio digita herdr:dev-server(w2:p2) nel prompt](./media/demo.gif)
 

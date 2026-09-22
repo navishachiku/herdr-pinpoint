@@ -15,11 +15,10 @@ Cross-pane chat in Herdr is awesome, but have you ever felt that describing
 the target takes too long, especially one in another Space?
 
 Vague targets cost twice: your tokens to describe them, the agent's to go
-find them. This popup ends both. Pick the pane, its Herdr id lands in the
-prompt, and the agent acts on exactly that one.
+find them. This popup ends both.
 
-> Three keystrokes, three seconds. Open, arrow, Enter, and the exact pane is in
-> your prompt, before you could have finished typing its description.
+> Three seconds is all it takes to name the target, faster than typing its
+> description.
 
 ![Pinpoint opens over an agent pane, a fast key and a typed filter narrow it to dev-server, and Enter types herdr:dev-server(w2:p2) into the prompt](docs/media/demo.gif)
 

@@ -13,11 +13,10 @@ Chatear entre panes en Herdr está genial, pero ¿a que se te hace eterno
 describir el objetivo? Sobre todo cuando está en otro Space.
 
 Los objetivos vagos cuestan dos veces: tus tokens para describirlos y los del
-agente para ir a buscarlos. Este popup acaba con ambos. Elige el pane, su id de
-Herdr aterriza en el prompt y el agente actúa exactamente sobre ese.
+agente para ir a buscarlos. Este popup acaba con ambos.
 
-> Tres teclas, tres segundos. Abrir, flecha, Enter, y el pane exacto está en tu
-> prompt antes de que hubieras terminado de escribir su descripción.
+> Tres segundos es todo lo que necesitas para nombrar el objetivo, más rápido
+> que escribir su descripción.
 
 ![El selector se abre sobre un pane de agente, una tecla rápida y un filtro escrito lo reducen a dev-server, y Enter escribe herdr:dev-server(w2:p2) en el prompt](./media/demo.gif)
 
