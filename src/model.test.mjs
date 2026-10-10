@@ -3,7 +3,7 @@
 
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { parseConfig, renderTemplate } from "./config.mjs";
+import { DEFAULT_CONFIG, parseConfig, renderOutput, renderTemplate } from "./config.mjs";
 import { parseKeys } from "./keys.mjs";
 import {
   PAGE_SIZE,
@@ -532,5 +532,44 @@ describe("keys, config and width", () => {
     assert.equal(width("\ud83d\ude80"), 2, "emoji");
     assert.equal(width("e\u0301"), 1, "a combining mark adds nothing");
     assert.equal(width("w1:p1 \u258f"), 7);
+  });
+});
+
+// ---------------------------------------------------------------- multi-machine
+
+describe("multiple machines", () => {
+  const remote = [
+    {
+      id: "w1",
+      machine: "RitaMini",
+      label: "ivan-hq",
+      tabs: [{ id: "w1:t1", label: "1", panes: [pane("w1:p1", { agent: "claude" })] }],
+    },
+  ];
+  const mixed = () => toItems([{ ...spaces[0], machine: null }, ...remote]);
+
+  test("remote panes are listed with their machine, even when raw ids equal local ones", () => {
+    const items = mixed();
+    assert.equal(items.length, 2);
+    assert.equal(items[1].label, "RitaMini · ivan-hq");
+    assert.notEqual(items[0].children[0].children[0].id, items[1].children[0].children[0].id);
+    assert.equal(findMatches(items, "RitaMini").length, 3);
+  });
+
+  test("opening on a local pane does not land on the remote pane with the same raw id", () => {
+    const items = mixed();
+    const state = initialState(items, ["w1", "w1:t1", "w1:p1"]);
+    assert.equal(state.hover[0], 0);
+  });
+
+  test("a remote pane types --machine <label> <id>; a local pane keeps the old text", () => {
+    const items = mixed();
+    assert.equal(renderOutput(DEFAULT_CONFIG, items[1].children[0].children[0]), "herdr:claude(--machine RitaMini w1:p1)");
+    assert.equal(renderOutput(DEFAULT_CONFIG, items[0].children[0].children[0]), "herdr:claude(w1:p1)");
+  });
+
+  test("remote_output_template is configurable", () => {
+    const cfg = parseConfig('remote_output_template = "{machine}:{id}"');
+    assert.equal(renderOutput(cfg, mixed()[1].children[0].children[0]), "RitaMini:w1:p1");
   });
 });

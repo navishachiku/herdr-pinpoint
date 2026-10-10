@@ -14,7 +14,8 @@ export const LEVELS = 3;
 export const LEVEL_TITLES = ["Spaces", "Tabs", "Panes"];
 
 /**
- * @typedef {{ id: string, label: string, name: string, children: Item[] }} Item
+ * @typedef {{ id: string, ref: string, machine: string | null, label: string, name: string, children: Item[] }} Item
+ *   id: unique across machines; ref: raw herdr id; machine: saved machine label, null for this one;
  *   label: text shown in the column, e.g. `hqcommit (claude)`;
  *   name: bare handle for the output template, e.g. `hqcommit`.
  * @typedef {{ item: Item, path: Item[], from: number, to: number }} Match
@@ -31,23 +32,24 @@ export const LEVEL_TITLES = ["Spaces", "Tabs", "Panes"];
  * @typedef {{ type: "select", item: Item } | { type: "quit" } | null} Effect
  */
 
-/** @param {import("./herdr.mjs").Space[]} spaces @returns {Item[]} */
+/**
+ * Remote items get ids namespaced by machine, since `w1:p1` exists on every
+ * machine; `ref` keeps the raw herdr id for the output template.
+ * @param {import("./herdr.mjs").Space[]} spaces @returns {Item[]}
+ */
 export function toItems(spaces) {
-  return spaces.map((s) => ({
-    id: s.id,
-    label: s.label,
-    name: s.label,
-    children: s.tabs.map((t) => ({
-      id: t.id,
-      label: t.label,
-      name: t.label,
-      children: t.panes.map((p) => {
+  return spaces.map((s) => {
+    const machine = s.machine ?? null;
+    const key = (id) => (machine ? `${machine}/${id}` : id);
+    const item = (id, label, name, children) => ({ id: key(id), ref: id, machine, label, name, children });
+    return item(s.id, machine ? `${machine} · ${s.label}` : s.label, s.label, s.tabs.map((t) =>
+      item(t.id, t.label, t.label, t.panes.map((p) => {
         const name = p.label ?? p.agentName ?? p.agent ?? "shell";
         const label = p.label ?? (p.agentName && p.agent ? `${p.agentName} (${p.agent})` : name);
-        return { id: p.id, label, name, children: [] };
-      }),
-    })),
-  }));
+        return item(p.id, label, name, []);
+      })),
+    ));
+  });
 }
 
 /** @param {Item[]} root @param {(string | null)[]} path @returns {State} */

@@ -1,11 +1,12 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-/** @typedef {{ outputTemplate: string }} Config  Text typed into the calling pane; tokens {name}, {label}, {id}. */
+/** @typedef {{ outputTemplate: string, remoteOutputTemplate: string }} Config  Text typed into the calling pane; tokens {name}, {label}, {id}, {machine}. */
 
 /** @type {Config} */
 export const DEFAULT_CONFIG = {
   outputTemplate: "herdr:{name}({id})",
+  remoteOutputTemplate: "herdr:{name}(--machine {machine} {id})",
 };
 
 const TEMPLATE = `# herdr-pinpoint
@@ -16,7 +17,10 @@ const TEMPLATE = `# herdr-pinpoint
 #            (spaces and tabs use their label)
 #   {label}  what the picker shows, e.g. "hqcommit (claude)"
 #   {id}     herdr id, e.g. w8:p1G
+#   {machine} saved machine label (remote items only)
+# remote_output_template is used for items on other machines.
 output_template = "${DEFAULT_CONFIG.outputTemplate}"
+remote_output_template = "${DEFAULT_CONFIG.remoteOutputTemplate}"
 `;
 
 /**
@@ -48,6 +52,7 @@ export function parseConfig(text) {
   }
   return {
     outputTemplate: values.get("output_template") ?? DEFAULT_CONFIG.outputTemplate,
+    remoteOutputTemplate: values.get("remote_output_template") ?? DEFAULT_CONFIG.remoteOutputTemplate,
   };
 }
 
@@ -57,4 +62,10 @@ export function parseConfig(text) {
  */
 export function renderTemplate(template, vars) {
   return template.replace(/\{(\w+)\}/g, (whole, key) => vars[key] ?? whole);
+}
+
+/** Text typed for an item: remote items use the remote template. */
+export function renderOutput(config, item) {
+  const template = item.machine ? config.remoteOutputTemplate : config.outputTemplate;
+  return renderTemplate(template, { name: item.name, label: item.label, id: item.ref, machine: item.machine ?? "" });
 }

@@ -1,4 +1,4 @@
-import { loadConfig, renderTemplate } from "./config.mjs";
+import { loadConfig, renderOutput } from "./config.mjs";
 import { loadContext, loadTree, sendText } from "./herdr.mjs";
 import { parseKeys } from "./keys.mjs";
 import { current, initialState, reduce, toItems } from "./model.mjs";
@@ -23,7 +23,7 @@ const out = process.stdout;
 const inp = process.stdin;
 
 function outputFor(item) {
-  return renderTemplate(config.outputTemplate, { name: item.name, label: item.label, id: item.id });
+  return renderOutput(config, item);
 }
 
 function draw() {

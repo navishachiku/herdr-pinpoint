@@ -110,6 +110,16 @@ not submitted, so you keep typing. The `herdr:` prefix is for humans; the id
 in the parentheses is what an agent with Herdr's official skill loaded acts
 on. Without that skill the string is just text.
 
+## Multiple machines
+
+Panes on every enabled saved machine (`herdr machine list`) appear after the
+local spaces, with the space shown as `<machine> · <space>`. A machine that is
+unreachable within 4 seconds is left out. Choosing a remote pane types:
+
+```
+herdr:dev-server(--machine RitaMini w2:p2) 
+```
+
 ## Configuration
 
 The first run writes `config.toml` to the plugin config directory
@@ -124,6 +134,10 @@ output_template = "herdr:{name}({id})"
 | `{name}` | the name from the table above |
 | `{label}` | the text shown in the column, e.g. `reviewer (codex)` |
 | `{id}` | Herdr id, e.g. `w2:p2` |
+| `{machine}` | saved machine label (remote items only) |
+
+Items on other machines use `remote_output_template`
+(default `herdr:{name}(--machine {machine} {id})`).
 
 ## Development
 
