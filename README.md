@@ -113,8 +113,10 @@ on. Without that skill the string is just text.
 ## Multiple machines
 
 Panes on every enabled saved machine (`herdr machine list`) appear after the
-local spaces, with the space shown as `<machine> · <space>`. A machine that is
-unreachable within 4 seconds is left out. Choosing a remote pane types:
+local spaces, with the space shown as `<machine> · <space>`. The picker opens
+with the local spaces at once; each machine's spaces join as it answers, and a
+line under the search box shows every machine as loaded (`●`), loading (`⠋`)
+or offline (`✕`, no answer within 4 seconds). Choosing a remote pane types:
 
 ```
 herdr:dev-server(--machine RitaMini w2:p2) 

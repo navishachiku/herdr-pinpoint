@@ -35,6 +35,11 @@ const ACTIVED = `\x1b[38;2;${ACCENT}m`;
 const ACCENT_BORDER = ACTIVED;
 /** Matched characters: yellow, the one colour not used for selection. */
 const MATCH = `\x1b[1;38;2;249;226;175m`;
+/** Machine states; each also carries its own mark and word, so colour is never the only cue. */
+const READY = `\x1b[38;2;166;227;161m`;
+const LOADING = `\x1b[38;2;249;226;175m`;
+const OFFLINE = `\x1b[38;2;243;139;168m`;
+const SPINNER = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏";
 /** Fast keys render as a small chip, like herdr's own key hints. */
 const KEY = `\x1b[48;2;${SURFACE1}m\x1b[38;2;${TEXT}m`;
 
@@ -128,6 +133,31 @@ function searchBox(state, inner) {
     `${border}\u2502${RESET}${body}${border}\u2502${RESET}`,
     `${border}\u2570${"\u2500".repeat(inner)}\u256f${RESET}`,
   ].map((line) => " ".repeat(GUTTER) + line);
+}
+
+/** `Machines  ● RitaMini   ⠋ NaviMachine loading   ✕ Navisecondary offline`, cut to fit. */
+function machineBar(state, inner) {
+  const spin = SPINNER[state.tick % SPINNER.length];
+  const parts = state.machines.map((m) =>
+    m.status === "ready"
+      ? { text: `● ${m.label}`, style: READY }
+      : m.status === "loading"
+        ? { text: `${spin} ${m.label} loading`, style: LOADING }
+        : { text: `✕ ${m.label} offline`, style: OFFLINE },
+  );
+  let used = width("Machines");
+  let line = `${DIM}Machines${RESET}`;
+  for (const [i, part] of parts.entries()) {
+    const sep = i === 0 ? "  " : "   ";
+    const room = inner - used - width(sep);
+    if (width(part.text) > room) {
+      if (room > 0) line += `${sep}${DIM}…${RESET}`;
+      break;
+    }
+    line += `${sep}${part.style}${part.text}${RESET}`;
+    used += width(sep) + width(part.text);
+  }
+  return " ".repeat(GUTTER) + line;
 }
 
 /** One result row: `space / tab / pane` with the matched run picked out. */
@@ -239,9 +269,10 @@ export function render(state, cols, rows, preview) {
   const colWidth = Math.floor((inner - GAP * (LEVELS - 1)) / LEVELS);
   const hints = state.typing ? TYPING_HINTS : searching(state) ? RESULT_HINTS : BROWSE_HINTS;
   const bottom = footer(cols, preview, hints);
-  const boxed = rows >= BOXED_MIN_ROWS + bottom.length;
+  const bar = state.machines.length ? [machineBar(state, inner)] : [];
+  const boxed = rows >= BOXED_MIN_ROWS + bar.length + bottom.length;
 
-  const lines = [...searchBox(state, inner - 2), ""];
+  const lines = [...searchBox(state, inner - 2), ...bar, ""];
 
   if (searching(state)) {
     lines.push(resultsHeader(state, inner));

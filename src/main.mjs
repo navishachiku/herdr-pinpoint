@@ -1,7 +1,7 @@
 import { loadConfig, renderOutput } from "./config.mjs";
-import { loadContext, loadTree, sendText } from "./herdr.mjs";
+import { loadContext, loadMachineTree, remoteMachines, sendText } from "./herdr.mjs";
 import { parseKeys } from "./keys.mjs";
-import { current, initialState, reduce, toItems } from "./model.mjs";
+import { current, initialState, machineLoaded, reduce, toItems } from "./model.mjs";
 import { render } from "./render.mjs";
 
 const ALT_SCREEN_ON = "\x1b[?1049h\x1b[?25l";
@@ -17,7 +17,16 @@ const context = loadContext();
 if (!context.paneId) fail("no focused pane in HERDR_PLUGIN_CONTEXT_JSON; open the picker from a pane");
 const targetPane = context.paneId;
 
-const state = initialState(toItems(loadTree()), [context.workspaceId, context.tabId, context.paneId]);
+const machines = remoteMachines();
+let local;
+try {
+  local = await loadMachineTree(null);
+} catch (err) {
+  fail(err.message);
+}
+const state = initialState(toItems(local), [context.workspaceId, context.tabId, context.paneId], machines);
+// Remote machines are asked in the background; the picker is usable meanwhile.
+const remote = new AbortController();
 
 const out = process.stdout;
 const inp = process.stdin;
@@ -33,6 +42,8 @@ function draw() {
 }
 
 function leave() {
+  remote.abort();
+  clearInterval(spinner);
   inp.setRawMode(false);
   out.write(ALT_SCREEN_OFF);
 }
@@ -54,6 +65,20 @@ inp.setEncoding("utf8");
 out.write(ALT_SCREEN_ON);
 out.on("resize", draw);
 draw();
+
+const spinner = setInterval(() => {
+  if (!state.machines.some((m) => m.status === "loading")) return clearInterval(spinner);
+  state.tick += 1;
+  draw();
+}, 100);
+for (const label of machines) {
+  loadMachineTree(label, remote.signal).then(
+    (spaces) => machineLoaded(state, label, toItems(spaces)),
+    () => machineLoaded(state, label, null),
+  ).then(() => {
+    if (!remote.signal.aborted) draw();
+  });
+}
 
 inp.on("data", (chunk) => {
   for (const action of parseKeys(chunk)) {

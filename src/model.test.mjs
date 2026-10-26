@@ -12,6 +12,7 @@ import {
   findMatches,
   hovered,
   initialState,
+  machineLoaded,
   matchPageCount,
   matchPageItems,
   pageCount,
@@ -21,6 +22,7 @@ import {
   searching,
   toItems,
 } from "./model.mjs";
+import { render } from "./render.mjs";
 import { width } from "./width.mjs";
 
 // ---------------------------------------------------------------- fixture
@@ -571,5 +573,58 @@ describe("multiple machines", () => {
   test("remote_output_template is configurable", () => {
     const cfg = parseConfig('remote_output_template = "{machine}:{id}"');
     assert.equal(renderOutput(cfg, mixed()[1].children[0].children[0]), "RitaMini:w1:p1");
+  });
+});
+
+// ------------------------------------------------- machines loading later
+
+describe("machines loading in the background", () => {
+  const remoteSpace = (machine, id = "w1") => ({
+    id,
+    machine,
+    label: "ivan-hq",
+    tabs: [{ id: `${id}:t1`, label: "1", panes: [pane(`${id}:p1`, { agent: "claude" })] }],
+  });
+  const local = () => toItems([{ ...spaces[0], machine: null }, { ...spaces[1], machine: null }]);
+  const plain = (text) => text.replace(/\x1b\[[0-9;]*[A-Za-z]/g, "");
+
+  test("a machine that answers later joins in registered order, the hover stays on its item", () => {
+    const state = initialState(local(), [], ["RitaMini", "NaviMachine"]);
+    machineLoaded(state, "NaviMachine", toItems([remoteSpace("NaviMachine")]));
+    reduce(state, digit(3));
+    reduce(state, LEFT);
+    assert.equal(hovered(state, 0).id, "NaviMachine/w1");
+    machineLoaded(state, "RitaMini", toItems([remoteSpace("RitaMini")]));
+    assert.deepEqual(ids(state.root), ["w1", "w2", "RitaMini/w1", "NaviMachine/w1"]);
+    assert.equal(hovered(state, 0).id, "NaviMachine/w1");
+  });
+
+  test("a search already on screen picks up the panes of a machine that answers later", () => {
+    const state = initialState(local(), [], ["RitaMini"]);
+    openQuery(state, "ivan");
+    assert.equal(state.matches.length, 0);
+    machineLoaded(state, "RitaMini", toItems([remoteSpace("RitaMini")]));
+    assert.ok(matchIds(state).includes("RitaMini/w1:p1"));
+  });
+
+  test("the bar under the search box shows each machine as loaded, loading or offline", () => {
+    const state = initialState(local(), [], ["RitaMini", "NaviMachine", "Navisecondary"]);
+    machineLoaded(state, "RitaMini", toItems([remoteSpace("RitaMini")]));
+    machineLoaded(state, "Navisecondary", null);
+    const screen = render(state, 120, 40, "").split(/\x1b\[\d+;1H\x1b\[2K/).slice(1).map(plain);
+    const bar = screen.findIndex((l) => l.includes("Machines"));
+    assert.match(screen[bar], /● RitaMini .*NaviMachine loading .*✕ Navisecondary offline/);
+    assert.equal(screen[bar + 1].trim(), "");
+    assert.match(screen[bar + 2], /^ Spaces \(/);
+  });
+
+  test("an offline machine adds nothing and local panes stay selectable", () => {
+    const state = initialState(local(), [], ["Navisecondary"]);
+    machineLoaded(state, "Navisecondary", null);
+    assert.deepEqual(ids(state.root), ["w1", "w2"]);
+    assert.deepEqual(state.machines, [{ label: "Navisecondary", status: "offline" }]);
+    reduce(state, RIGHT);
+    reduce(state, RIGHT);
+    assert.equal(reduce(state, ENTER).item.id, "w1:p1");
   });
 });

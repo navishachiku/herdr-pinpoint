@@ -1,7 +1,7 @@
 // Thin wrapper around the herdr CLI. Everything the picker knows about the
 // live session comes through here.
 
-import { spawnSync } from "node:child_process";
+import { execFile, spawnSync } from "node:child_process";
 
 /**
  * @typedef {{ id: string, machine: string | null, label: string, tabs: Tab[] }} Space
@@ -14,44 +14,41 @@ import { spawnSync } from "node:child_process";
  * @typedef {{ workspaceId: string | null, tabId: string | null, paneId: string | null }} Context
  */
 
-// A dead machine must not hold the picker open.
+// A remote machine silent this long is marked offline.
 const REMOTE_TIMEOUT_MS = 4000;
 
 const bin = process.env.HERDR_BIN_PATH ?? "herdr";
 
-function call(args, machine = null) {
-  if (machine) args = ["--machine", machine, ...args];
-  const proc = spawnSync(bin, args, {
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-    timeout: machine ? REMOTE_TIMEOUT_MS : undefined,
-  });
-  if (proc.error) throw new Error(`herdr ${args.join(" ")} failed: ${proc.error.message}`);
-  if (proc.status !== 0) throw new Error(`herdr ${args.join(" ")} failed: ${proc.stderr.trim()}`);
-  const body = JSON.parse(proc.stdout);
+function parse(args, stdout) {
+  const body = JSON.parse(stdout);
   if (body.error) throw new Error(`herdr ${args.join(" ")}: ${JSON.stringify(body.error)}`);
   return body.result;
 }
 
-/**
- * Local spaces first, then those of every enabled saved machine. A machine that
- * cannot be reached is skipped so it never blocks the picker.
- * @returns {Space[]}
- */
-export function loadTree() {
-  const spaces = loadMachineTree(null);
-  for (const label of remoteMachines()) {
-    try {
-      spaces.push(...loadMachineTree(label));
-    } catch {
-      // unreachable machine: leave it out
-    }
-  }
-  return spaces;
+function call(args) {
+  const proc = spawnSync(bin, args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  if (proc.error) throw new Error(`herdr ${args.join(" ")} failed: ${proc.error.message}`);
+  if (proc.status !== 0) throw new Error(`herdr ${args.join(" ")} failed: ${proc.stderr.trim()}`);
+  return parse(args, proc.stdout);
+}
+
+/** Asynchronous, so machines are asked side by side and none holds the picker. */
+function callAsync(args, machine, signal) {
+  if (machine) args = ["--machine", machine, ...args];
+  return new Promise((resolve, reject) => {
+    execFile(bin, args, { encoding: "utf8", timeout: machine ? REMOTE_TIMEOUT_MS : 0, signal }, (err, stdout, stderr) => {
+      if (err) return reject(new Error(`herdr ${args.join(" ")} failed: ${stderr.trim() || err.message}`));
+      try {
+        resolve(parse(args, stdout));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  });
 }
 
 /** @returns {string[]} labels of enabled saved machines; none if the list is unavailable */
-function remoteMachines() {
+export function remoteMachines() {
   try {
     const proc = spawnSync(bin, ["machine", "list", "--json"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
     if (proc.status !== 0) return [];
@@ -63,33 +60,42 @@ function remoteMachines() {
   }
 }
 
-/** @param {string | null} machine @returns {Space[]} */
-function loadMachineTree(machine) {
-  const { workspaces } = call(["workspace", "list"], machine);
-  const { agents } = call(["agent", "list"], machine);
+/**
+ * Spaces of one machine; rejects when a remote machine cannot be reached.
+ * @param {string | null} machine  saved machine label; null for this one
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<Space[]>}
+ */
+export async function loadMachineTree(machine, signal) {
+  const ask = (args) => callAsync(args, machine, signal);
+  const [{ workspaces }, { agents }] = await Promise.all([ask(["workspace", "list"]), ask(["agent", "list"])]);
   const agentNames = new Map(agents.map((a) => [a.pane_id, a.name ?? null]));
 
-  return workspaces.map((ws) => {
-    const { tabs } = call(["tab", "list", "--workspace", ws.workspace_id], machine);
-    const { panes } = call(["pane", "list", "--workspace", ws.workspace_id], machine);
-    return {
-      id: ws.workspace_id,
-      machine,
-      label: ws.label,
-      tabs: tabs.map((tab) => ({
-        id: tab.tab_id,
-        label: tab.label,
-        panes: panes
-          .filter((p) => p.tab_id === tab.tab_id)
-          .map((p) => ({
-            id: p.pane_id,
-            label: p.label ?? null,
-            agent: p.agent ?? null,
-            agentName: agentNames.get(p.pane_id) ?? null,
-          })),
-      })),
-    };
-  });
+  return Promise.all(
+    workspaces.map(async (ws) => {
+      const [{ tabs }, { panes }] = await Promise.all([
+        ask(["tab", "list", "--workspace", ws.workspace_id]),
+        ask(["pane", "list", "--workspace", ws.workspace_id]),
+      ]);
+      return {
+        id: ws.workspace_id,
+        machine,
+        label: ws.label,
+        tabs: tabs.map((tab) => ({
+          id: tab.tab_id,
+          label: tab.label,
+          panes: panes
+            .filter((p) => p.tab_id === tab.tab_id)
+            .map((p) => ({
+              id: p.pane_id,
+              label: p.label ?? null,
+              agent: p.agent ?? null,
+              agentName: agentNames.get(p.pane_id) ?? null,
+            })),
+        })),
+      };
+    }),
+  );
 }
 
 /** @returns {Context} */

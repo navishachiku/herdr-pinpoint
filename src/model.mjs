@@ -21,11 +21,15 @@ export const LEVEL_TITLES = ["Spaces", "Tabs", "Panes"];
  * @typedef {{ item: Item, path: Item[], from: number, to: number }} Match
  *   path: the item's ancestors, outermost first; from/to: the matched run
  *   inside `pathText(match)`, for highlighting.
+ * @typedef {{ label: string, status: "loading" | "ready" | "offline" }} Machine
  * @typedef {{ root: Item[], depth: number, hover: number[], page: number[],
- *   query: string, typing: boolean, matches: Match[], cursor: number, matchPage: number }} State
+ *   query: string, typing: boolean, matches: Match[], cursor: number, matchPage: number,
+ *   machines: Machine[], tick: number }} State
  *   depth: column that receives navigation keys; every column left of it has an Actived item;
  *   hover, page: per column — index into the list and its 0-based page;
- *   typing: the query is open for editing; matches/cursor/matchPage: the results list.
+ *   typing: the query is open for editing; matches/cursor/matchPage: the results list;
+ *   machines: saved machines in registered order, their spaces joining `root` as each answers;
+ *   tick: frame of the loading spinner.
  * @typedef {{ type: "up" | "down" | "choose" | "back" | "pageUp" | "pageDown"
  *   | "backspace" | "clear" | "enter" | "escape" | "query" }
  *   | { type: "digit", n: number } | { type: "input", char: string }} Action
@@ -52,8 +56,11 @@ export function toItems(spaces) {
   });
 }
 
-/** @param {Item[]} root @param {(string | null)[]} path @returns {State} */
-export function initialState(root, path) {
+/**
+ * @param {Item[]} root  this machine's items; remote ones arrive through machineLoaded
+ * @param {(string | null)[]} path @param {string[]} [machines] @returns {State}
+ */
+export function initialState(root, path, machines = []) {
   const state = {
     root,
     depth: 0,
@@ -64,6 +71,8 @@ export function initialState(root, path) {
     matches: [],
     cursor: 0,
     matchPage: 0,
+    machines: machines.map((label) => ({ label, status: "loading" })),
+    tick: 0,
   };
   let items = root;
   for (let level = 0; level < LEVELS; level++) {
@@ -74,6 +83,28 @@ export function initialState(root, path) {
     items = items[idx].children;
   }
   return state;
+}
+
+/**
+ * A machine answered (`items`) or gave up (`null`). Its spaces go after this
+ * machine's and those of machines registered before it, whatever order the
+ * answers come in; the hover and the search cursor stay on the item they held.
+ * @param {State} state @param {string} label @param {Item[] | null} items
+ */
+export function machineLoaded(state, label, items) {
+  const order = state.machines.findIndex((m) => m.label === label);
+  if (order < 0) return;
+  state.machines[order].status = items ? "ready" : "offline";
+  if (!items?.length) return;
+  const rank = (it) => (it.machine === null ? -1 : state.machines.findIndex((m) => m.label === it.machine));
+  const at = state.root.findIndex((it) => rank(it) > order);
+  const index = at < 0 ? state.root.length : at;
+  state.root.splice(index, 0, ...items);
+  if (state.root.length > items.length && index <= state.hover[0]) {
+    state.hover[0] += items.length;
+    state.page[0] = Math.floor(state.hover[0] / PAGE_SIZE);
+  }
+  if (searching(state)) rematch(state, state.query);
 }
 
 /** True while the results list replaces the three columns. */
@@ -195,6 +226,10 @@ function setCursor(state, idx) {
  */
 function setQuery(state, text) {
   if (text === state.query) return;
+  rematch(state, text);
+}
+
+function rematch(state, text) {
   const held = state.matches[state.cursor]?.item.id;
   const next = findMatches(state.root, text);
   state.query = text;
