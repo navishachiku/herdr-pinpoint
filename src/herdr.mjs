@@ -17,6 +17,11 @@ import { execFile, spawnSync } from "node:child_process";
 // A remote machine silent this long is marked offline.
 const REMOTE_TIMEOUT_MS = 4000;
 
+// Remote commands in flight at once per machine. Each one opens an SSH session,
+// and sshd refuses new sessions past its limit (10 by default), which would
+// otherwise fail the whole machine when it has many spaces.
+const REMOTE_CONCURRENCY = 4;
+
 const bin = process.env.HERDR_BIN_PATH ?? "herdr";
 
 function parse(args, stdout) {
@@ -37,7 +42,11 @@ function callAsync(args, machine, signal) {
   if (machine) args = ["--machine", machine, ...args];
   return new Promise((resolve, reject) => {
     execFile(bin, args, { encoding: "utf8", timeout: machine ? REMOTE_TIMEOUT_MS : 0, signal }, (err, stdout, stderr) => {
-      if (err) return reject(new Error(`herdr ${args.join(" ")} failed: ${stderr.trim() || err.message}`));
+      if (err) {
+        const failure = new Error(`herdr ${args.join(" ")} failed: ${stderr.trim() || err.message}`);
+        failure.silent = Boolean(err.killed) || signal?.aborted === true; // timed out or aborted
+        return reject(failure);
+      }
       try {
         resolve(parse(args, stdout));
       } catch (e) {
@@ -45,6 +54,36 @@ function callAsync(args, machine, signal) {
       }
     });
   });
+}
+
+/** A remote command that failed on its own (not by timeout or abort) is tried once more. */
+async function callRemote(args, machine, signal) {
+  try {
+    return await callAsync(args, machine, signal);
+  } catch (err) {
+    if (err.silent) throw err;
+    return callAsync(args, machine, signal);
+  }
+}
+
+/** Runs tasks with at most `limit` in flight; each call resolves with its own task's result. */
+function limiter(limit) {
+  let active = 0;
+  const waiting = [];
+  const next = () => {
+    if (active >= limit || waiting.length === 0) return;
+    active++;
+    const { task, resolve, reject } = waiting.shift();
+    task().then(resolve, reject).finally(() => {
+      active--;
+      next();
+    });
+  };
+  return (task) =>
+    new Promise((resolve, reject) => {
+      waiting.push({ task, resolve, reject });
+      next();
+    });
 }
 
 /** @returns {string[]} labels of enabled saved machines; none if the list is unavailable */
@@ -67,7 +106,8 @@ export function remoteMachines() {
  * @returns {Promise<Space[]>}
  */
 export async function loadMachineTree(machine, signal) {
-  const ask = (args) => callAsync(args, machine, signal);
+  const gate = machine ? limiter(REMOTE_CONCURRENCY) : (task) => task();
+  const ask = (args) => gate(() => (machine ? callRemote(args, machine, signal) : callAsync(args, machine, signal)));
   const [{ workspaces }, { agents }] = await Promise.all([ask(["workspace", "list"]), ask(["agent", "list"])]);
   const agentNames = new Map(agents.map((a) => [a.pane_id, a.name ?? null]));
 
